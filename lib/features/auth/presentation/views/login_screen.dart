@@ -50,6 +50,13 @@ class _LoginScreenState extends State<LoginScreen> {
           _passwordController.text,
         );
         _showMessage('تم تسجيل الدخول بنجاح');
+
+        // Navigate to login-specific OTP verification screen
+        AppRouter.instance.navigateToLoginOtpVerification(
+          context,
+          _emailController.text.trim(),
+          "+1234567890", // In a real app, this would come from the user's profile or auth response
+        );
       } catch (e) {
         _showMessage('فشل تسجيل الدخول', isError: true);
       } finally {
@@ -106,114 +113,92 @@ class _LoginScreenState extends State<LoginScreen> {
         elevation: 0,
         toolbarHeight: 0,
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.ScreenBackground,
-        ),
-        child: SafeArea(
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: LayoutBuilder(builder: (context, constraints) {
-              final isSmallScreen = constraints.maxWidth < 600;
-              final horizontalPadding = isSmallScreen ? 24.0 : 80.0;
-
-              return SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: horizontalPadding, vertical: 20),
-                  child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(height: 24),
-                          LoginHeader(compact: true),
-                          const SizedBox(
-                              height: 8), // Between title and subtitle
-                          const SizedBox(height: 10), // After subtitle
-
-                          CustomTextField(
-                            hintText: 'أدخل بريد الكتروني فعال',
-                            labelText: 'البريد الألكتروني',
-                            iconPath: 'assets/images/email_icon.svg',
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'يرجى إدخال البريد الإلكتروني';
-                              }
-                              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                  .hasMatch(value)) {
-                                return 'يرجى إدخال بريد إلكتروني صحيح';
-                              }
-                              return null;
-                            },
-                          ),
-
-                          const SizedBox(height: 16),
-
-                          CustomTextField(
-                            hintText: 'أدخل كلمة المرور الخاصة بك',
-                            labelText: 'كلمة المرور',
-                            iconPath: 'assets/images/lock_icon.svg',
-                            controller: _passwordController,
-                            isPassword: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'يرجى إدخال كلمة المرور';
-                              }
-                              if (value.length < 6) {
-                                return 'كلمة المرور يجب أن تكون على الأقل 6 أحرف';
-                              }
-                              return null;
-                            },
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          ForgotPasswordLink(onTap: _handleForgotPassword),
-
-                          const SizedBox(height: 24),
-
-                          TermsCheckbox(
-                            value: _acceptTerms,
-                            onChanged: (value) {
-                              setState(() {
-                                _acceptTerms = value ?? false;
-                              });
-                            },
-                          ),
-
-                          const SizedBox(height: 24),
-
-                          CustomButton(
-                            text: 'تسجيل الدخول',
-                            onTap: () => AppRouter.instance
-                                .navigateToOtpVerification(
-                                    context, "user@example.com", "+1234567890"),
-                            isLoading: _isLoading,
-                            backgroundColor: AppColors.primary,
-                            textColor: AppColors.white,
-                          ),
-
-                          const SizedBox(height: 16),
-
-                          CustomButton(
-                            text: 'سجل باستخدام غوغل',
-                            onTap: _handleGoogleSignIn,
-                            outlined: true,
-                            backgroundColor: AppColors.white,
-                            textColor: AppColors.primary,
-                            leadingIconPath: 'assets/images/google_icon.svg',
-                          ),
-
-                          const SizedBox(height: 24),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 20.0),
-                            child: SignUpLink(onTap: _handleSignUp),
-                          ),
-                        ],
-                      )));
-            }),
+      body: SafeArea(
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const LoginHeader(compact: true),
+                    Column(
+                      children: [
+                        CustomTextField(
+                          hintText: 'أدخل بريد الكتروني فعال',
+                          labelText: 'البريد الألكتروني',
+                          iconPath: 'assets/images/email_icon.svg',
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'يرجى إدخال البريد الإلكتروني';
+                            }
+                            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                .hasMatch(value)) {
+                              return 'يرجى إدخال بريد إلكتروني صحيح';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        CustomTextField(
+                          hintText: 'أدخل كلمة المرور الخاصة بك',
+                          labelText: 'كلمة المرور',
+                          iconPath: 'assets/images/lock_icon.svg',
+                          controller: _passwordController,
+                          isPassword: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'يرجى إدخال كلمة المرور';
+                            }
+                            if (value.length < 6) {
+                              return 'كلمة المرور يجب أن تكون على الأقل 6 أحرف';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        ForgotPasswordLink(onTap: _handleForgotPassword),
+                      ],
+                    ),
+                    TermsCheckbox(
+                      value: _acceptTerms,
+                      onChanged: (value) {
+                        setState(() {
+                          _acceptTerms = value ?? false;
+                        });
+                      },
+                    ),
+                    Column(
+                      children: [
+                        CustomButton(
+                          text: 'تسجيل الدخول',
+                          onTap: _handleLogin,
+                          isLoading: _isLoading,
+                          backgroundColor: AppColors.primary,
+                          textColor: AppColors.white,
+                        ),
+                        const SizedBox(height: 16),
+                        CustomButton(
+                          text: 'سجل باستخدام غوغل',
+                          onTap: _handleGoogleSignIn,
+                          outlined: true,
+                          backgroundColor: AppColors.white,
+                          textColor: AppColors.primary,
+                          leadingIconPath: 'assets/images/google_icon.svg',
+                        ),
+                        const SizedBox(height: 16),
+                        SignUpLink(onTap: _handleSignUp),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),

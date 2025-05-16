@@ -7,14 +7,22 @@ import '../../../../core/widgets/custom_button.dart';
 import '../manager/auth_controller.dart';
 import 'dart:async';
 
+// Enum to identify the verification purpose
+enum OtpVerificationPurpose {
+  login,
+  resetPassword,
+}
+
 class OtpVerificationScreen extends StatefulWidget {
   final String email;
   final String phoneNumber;
+  final OtpVerificationPurpose purpose;
 
   const OtpVerificationScreen({
     super.key,
     required this.email,
     required this.phoneNumber,
+    this.purpose = OtpVerificationPurpose.login, // Default to login
   });
 
   @override
@@ -123,8 +131,15 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
       if (mounted) {
         _showMessage('تم التحقق بنجاح');
-        // Navigate to reset password screen after successful verification
-        AppRouter.instance.navigateToResetPassword(context, widget.email);
+
+        // Navigate based on the verification purpose
+        if (widget.purpose == OtpVerificationPurpose.login) {
+          // For login flow, navigate to home page
+          AppRouter.instance.replaceWithHome(context);
+        } else {
+          // For password reset flow, navigate to reset password screen
+          AppRouter.instance.navigateToResetPassword(context, widget.email);
+        }
       }
     } catch (e) {
       if (mounted) {

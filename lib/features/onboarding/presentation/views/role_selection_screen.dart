@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:legal_app/features/onboarding/presentation/views/widgets/RoleButton%20.dart';
 import 'package:legal_app/features/onboarding/presentation/views/widgets/continue_button.dart';
-import '../../../home/presentation/home_page.dart';
+import '../../../home/presentation/views/home_page.dart';
 import '../../data/models/user_role.dart';
 
 class RoleSelectionScreen extends StatefulWidget {

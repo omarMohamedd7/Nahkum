@@ -46,7 +46,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           );
 
           // Navigate to OTP verification screen after sending the reset code
-          AppRouter.instance.navigateToOtpVerification(
+          AppRouter.instance.navigateToResetPasswordOtpVerification(
             context,
             email,
             email, // Using email instead of phone number as we don't have it
