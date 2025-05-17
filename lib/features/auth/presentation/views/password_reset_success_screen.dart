@@ -51,10 +51,7 @@ class PasswordResetSuccessScreen extends StatelessWidget {
                           'assets/images/check_circle.svg',
                           width: 64,
                           height: 64,
-                          colorFilter: const ColorFilter.mode(
-                            AppColors.goldLight,
-                            BlendMode.srcIn,
-                          ),
+                          color: AppColors.goldLight,
                         ),
                       ),
                     ),

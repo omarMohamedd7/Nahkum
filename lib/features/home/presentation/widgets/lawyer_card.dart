@@ -197,7 +197,8 @@ class LawyerCard extends StatelessWidget {
                       children: [
                         OutlinedButton(
                           onPressed: () {
-                            AppRouter.instance.navigateToPublishCase(context);
+                            AppRouter.instance
+                                .navigateToDirectCaseRequest(context);
                           },
                           style: OutlinedButton.styleFrom(
                             foregroundColor: const Color(0xFF181E3C),
@@ -262,7 +263,7 @@ class LawyerCard extends StatelessWidget {
         children: [
           OutlinedButton(
             onPressed: () {
-              AppRouter.instance.navigateToPublishCase(context);
+              AppRouter.instance.navigateToDirectCaseRequest(context);
             },
             style: OutlinedButton.styleFrom(
               foregroundColor: const Color(0xFF181E3C),

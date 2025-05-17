@@ -83,8 +83,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         leading: IconButton(
           icon: SvgPicture.asset(
             'assets/images/arrow-right.svg',
-            colorFilter:
-                const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+            color: AppColors.primary,
           ),
           onPressed: () => AppRouter.instance.goBack(context),
         ),

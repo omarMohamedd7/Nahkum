@@ -102,8 +102,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         padding: const EdgeInsets.all(12.0),
                         child: SvgPicture.asset(
                           'assets/images/eye_icon.png',
-                          colorFilter:
-                              ColorFilter.mode(secondaryColor, BlendMode.srcIn),
+                          color: secondaryColor,
                         ),
                       ),
                     )
@@ -113,8 +112,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       padding: const EdgeInsets.all(12.0),
                       child: SvgPicture.asset(
                         widget.iconPath!,
-                        colorFilter: ColorFilter.mode(
-                            AppColors.primary, BlendMode.srcIn),
+                        color: AppColors.primary,
                       ),
                     )
                   : widget.prefixIcon != null

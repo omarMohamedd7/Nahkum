@@ -7,9 +7,11 @@ import '../../features/auth/presentation/views/reset_password_screen.dart'; // �
 import '../../features/auth/presentation/views/password_reset_success_screen.dart'; // ✅ Import Password Reset Success screen
 import '../../features/home/presentation/views/home_page.dart'; // ✅ Import home page
 import '../../features/home/presentation/views/lawyers_listing_page.dart'; // ✅ Import lawyers listing page
-import '../../features/case_request/presentation/views/publish_case_page.dart'; // ✅ Import publish case page
+import '../../features/direct case request/presentation/views/direct_case_request.dart'; // ✅ Import direct case request page
+import '../../features/Publish Case/presentation/views/publish_case.dart'; // ✅ Import publish case page
 import '../../features/consultation/presentation/views/consultation_request_page.dart'; // ✅ Import consultation request page
 import '../../features/home/domain/entities/lawyer.dart'; // ✅ Import lawyer entity
+import '../../features/case_management/presentation/views/cases_page.dart'; // ✅ Import cases page
 
 class AppRouter {
   // Route names
@@ -25,10 +27,13 @@ class AppRouter {
   static const String homeRoute = '/home'; // ✅ Home route name
   static const String publishCaseRoute =
       '/publish-case'; // ✅ Publish case route name
+  static const String directCaseRequestRoute =
+      '/direct-case-request'; // ✅ Direct case request route name
   static const String lawyersListingRoute =
       '/lawyers-listing'; // ✅ Lawyers listing route name
   static const String consultationRequestRoute =
       '/consultation-request'; // ✅ Consultation request route name
+  static const String casesRoute = '/cases'; // ✅ Cases route name
 
   // Private constructor
   AppRouter._();
@@ -80,8 +85,13 @@ class AppRouter {
 
       case publishCaseRoute:
         return MaterialPageRoute(
-          builder: (_) => const PublishCasePage(),
+          builder: (_) => const PublishCase(),
         ); // ✅ Publish case page route
+
+      case directCaseRequestRoute:
+        return MaterialPageRoute(
+          builder: (_) => const DirectCaseRequest(),
+        ); // ✅ Direct case request page route
 
       case lawyersListingRoute:
         return MaterialPageRoute(
@@ -95,6 +105,11 @@ class AppRouter {
             lawyer: args?['lawyer'] as Lawyer?,
           ),
         ); // ✅ Consultation request page route
+
+      case casesRoute:
+        return MaterialPageRoute(
+          builder: (_) => const CasesPage(),
+        ); // ✅ Cases page route
 
       default:
         return MaterialPageRoute(
@@ -140,6 +155,7 @@ class AppRouter {
       otpVerificationRoute,
       arguments: {
         'email': email,
+        'phoneNumber': phoneNumber,
         'purpose': OtpVerificationPurpose.resetPassword,
       },
     );
@@ -177,6 +193,14 @@ class AppRouter {
         'lawyer': lawyer,
       },
     );
+  }
+
+  void navigateToDirectCaseRequest(BuildContext context) {
+    Navigator.of(context).pushNamed(directCaseRequestRoute);
+  }
+
+  void navigateToCasesPage(BuildContext context) {
+    Navigator.of(context).pushNamed(casesRoute);
   }
 
   void replaceWithPasswordResetSuccess(BuildContext context) {

@@ -212,7 +212,7 @@ class ListedLawyerCard extends StatelessWidget {
                             OutlinedButton(
                               onPressed: () {
                                 AppRouter.instance
-                                    .navigateToPublishCase(context);
+                                    .navigateToDirectCaseRequest(context);
                               },
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: const Color(0xFF181E3C),

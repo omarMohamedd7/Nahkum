@@ -10,14 +10,14 @@ import '../widgets/case_type_dropdown.dart';
 import '../widgets/file_upload_section.dart';
 import '../widgets/file_picker_dialog.dart';
 
-class PublishCasePage extends StatefulWidget {
-  const PublishCasePage({super.key});
+class DirectCaseRequest extends StatefulWidget {
+  const DirectCaseRequest({super.key});
 
   @override
-  State<PublishCasePage> createState() => _PublishCasePageState();
+  State<DirectCaseRequest> createState() => _DirectCaseRequestState();
 }
 
-class _PublishCasePageState extends State<PublishCasePage> {
+class _DirectCaseRequestState extends State<DirectCaseRequest> {
   final _formKey = GlobalKey<FormState>();
 
   // Form fields
@@ -127,7 +127,8 @@ class _PublishCasePageState extends State<PublishCasePage> {
             _isSubmitting = false;
           });
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('تم نشر الطلب بنجاح')),
+            const SnackBar(
+                content: Text('تم ارسال طلبك الى المحامي بانتظار الموافقة')),
           );
           Navigator.pop(context);
         }
@@ -255,7 +256,7 @@ class _PublishCasePageState extends State<PublishCasePage> {
                   // Submit Button
                   CustomButton(
                     backgroundColor: AppColors.primary,
-                    text: 'نشر الطلب',
+                    text: 'ارسال الطلب',
                     onTap: _submitForm,
                     isLoading: _isSubmitting,
                   ),

@@ -193,13 +193,19 @@ class HomePage extends StatelessWidget {
           },
           child: Row(
             children: [
-              const Text(
-                'عرض الكل',
-                style: TextStyle(
-                  fontFamily: 'Almarai',
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
+              InkWell(
+                onTap: () {
+                  // Navigate to the lawyers listing page
+                  AppRouter.instance.navigateToLawyersListing(context);
+                },
+                child: const Text(
+                  'عرض الكل',
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
               const SizedBox(width: 4),
@@ -212,7 +218,7 @@ class HomePage extends StatelessWidget {
           ),
         ),
         const Text(
-          'محامون متاحون في منطقتك',
+          'محامون متاحون في مدينتك',
           style: TextStyle(
             fontFamily: 'Almarai',
             fontSize: 15,

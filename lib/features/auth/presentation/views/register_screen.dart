@@ -143,8 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           IconButton(
             icon: SvgPicture.asset(
               'assets/images/arrow-right.svg',
-              colorFilter:
-                  const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+              color: AppColors.primary,
             ),
             onPressed: () => Navigator.of(context).pop(),
           ),
@@ -223,10 +222,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       'assets/images/gallery.svg',
                                       height: 24,
                                       width: 24,
-                                      colorFilter: ColorFilter.mode(
-                                        AppColors.primary,
-                                        BlendMode.srcIn,
-                                      ),
+                                      color: AppColors.primary,
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
