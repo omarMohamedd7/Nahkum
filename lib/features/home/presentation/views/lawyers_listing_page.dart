@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_search_text_field.dart';
+import '../../../../core/utils/app_router.dart';
 import '../../domain/entities/lawyer.dart';
 import '../widgets/listed_lawyer_card.dart';
 import '../widgets/bottom_navigation_bar.dart';
@@ -219,9 +220,13 @@ class _LawyersListingPageState extends State<LawyersListingPage> {
                             lawyer: lawyer,
                             onConsultTap: () {
                               // Navigate to consultation request page
+                              AppRouter.instance.navigateToConsultationRequest(
+                                  context,
+                                  lawyer: lawyer);
                             },
                             onRepresentTap: () {
                               // Navigate to attorney request page
+                              AppRouter.instance.navigateToPublishCase(context);
                             },
                           ),
                         );

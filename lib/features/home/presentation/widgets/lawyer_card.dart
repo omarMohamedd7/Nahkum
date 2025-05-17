@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:legal_app/core/theme/app_colors.dart';
+import 'package:legal_app/core/utils/app_router.dart';
 import '../../domain/entities/lawyer.dart';
 
 class LawyerCard extends StatelessWidget {
@@ -31,86 +32,86 @@ class LawyerCard extends StatelessWidget {
         ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // Top section with lawyer info
+          // Top section
           Padding(
-            padding: const EdgeInsets.all(10.0), // Reduced padding
+            padding: const EdgeInsets.all(10.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        lawyer.name,
-                        style: const TextStyle(
-                          fontFamily: 'Almarai',
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
-                        ),
+                      SvgPicture.asset(
+                        'assets/images/location.svg',
+                        width: 14,
+                        height: 14,
+                        color: Colors.grey,
                       ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            lawyer.location,
-                            style: const TextStyle(
-                              fontFamily: 'Almarai',
-                              fontSize: 14,
-                              color: Color(0xFF737373),
-                            ),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          lawyer.location,
+                          style: const TextStyle(
+                            fontFamily: 'Almarai',
+                            fontSize: 14,
+                            color: Color(0xFF737373),
                           ),
-                          const SizedBox(width: 6),
-                          SvgPicture.asset(
-                            'assets/images/location.svg',
-                            width: 14,
-                            height: 14,
-                            color: Colors.grey,
-                          ),
-                        ],
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 12),
-                CircleAvatar(
-                  radius: 35,
-                  backgroundColor: Colors.grey[200],
-                  child: _buildLawyerImage(),
-                ),
-              ],
-            ),
-          ),
-
-          // Description wrapped with Flexible inside Row to prevent overflow
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4),
-            child: Row(
-              children: [
-                Flexible(
-                  child: Text(
-                    lawyer.description,
-                    style: const TextStyle(
-                      fontFamily: 'Almarai',
-                      fontSize: 14,
-                      color: Color(0xFF737373),
-                    ),
-                    textAlign: TextAlign.right,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: CircleAvatar(
+                    radius: 35,
+                    backgroundColor: Colors.grey[200],
+                    child: _buildLawyerImage(),
                   ),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(height: 4), // Reduced height
+          // Name
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4),
+            child: Text(
+              lawyer.name,
+              style: const TextStyle(
+                fontFamily: 'Almarai',
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
 
-          // Middle section - Price and specialization
+          // Description
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4),
+            child: Text(
+              lawyer.description,
+              style: const TextStyle(
+                fontFamily: 'Almarai',
+                fontSize: 14,
+                color: Color(0xFF737373),
+              ),
+              textAlign: TextAlign.right,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+
+          const SizedBox(height: 4),
+
+          // Price and Specialization
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Column(
@@ -147,8 +148,7 @@ class LawyerCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10), // Slightly smaller spacing
-                // Specialization info
+                const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -183,123 +183,134 @@ class LawyerCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 10), // Reduced bottom padding
 
-          // Bottom section - Action buttons
+          const SizedBox(height: 10),
+
+          // Bottom buttons
           Padding(
-            padding: const EdgeInsets.all(10.0), // Reduced padding
+            padding: const EdgeInsets.all(10.0),
             child: fullWidth
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      // Attorney Request Button (right)
-                      OutlinedButton(
-                        onPressed: onRepresentTap,
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF181E3C),
-                          backgroundColor: AppColors.primary,
-                          side: const BorderSide(color: Color(0xFF181E3C)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
+                ? Center(
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () {
+                            AppRouter.instance.navigateToPublishCase(context);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFF181E3C),
+                            backgroundColor: AppColors.primary,
+                            side: const BorderSide(color: Color(0xFF181E3C)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            minimumSize: const Size(0, 30),
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          minimumSize: const Size(0, 30),
-                        ),
-                        child: const Text(
-                          'طلب توكيل',
-                          style: TextStyle(
-                            fontFamily: 'Almarai',
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.white,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      // Consult Request Button (left)
-                      ElevatedButton(
-                        onPressed: onConsultTap,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                            side: BorderSide(color: AppColors.primary),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          minimumSize: const Size(0, 30),
-                        ),
-                        child: const Text(
-                          'طلب استشارة',
-                          style: TextStyle(
-                            fontFamily: 'Almarai',
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
+                          child: const Text(
+                            'طلب توكيل',
+                            style: TextStyle(
+                              fontFamily: 'Almarai',
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.white,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                        ElevatedButton(
+                          onPressed: () {
+                            AppRouter.instance.navigateToConsultationRequest(
+                                context,
+                                lawyer: lawyer);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                              side: BorderSide(color: AppColors.primary),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            minimumSize: const Size(0, 30),
+                          ),
+                          child: const Text(
+                            'طلب استشارة',
+                            style: TextStyle(
+                              fontFamily: 'Almarai',
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   )
-                : _buildCompactActionButtons(),
+                : _buildCompactActionButtons(context),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCompactActionButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Consult Request Button
-        ElevatedButton(
-          onPressed: onConsultTap,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6),
-              side: BorderSide(color: AppColors.primary),
+  Widget _buildCompactActionButtons(BuildContext context) {
+    return Center(
+      child: Wrap(
+        spacing: 8,
+        children: [
+          OutlinedButton(
+            onPressed: () {
+              AppRouter.instance.navigateToPublishCase(context);
+            },
+            style: OutlinedButton.styleFrom(
+              foregroundColor: const Color(0xFF181E3C),
+              backgroundColor: AppColors.primary,
+              side: const BorderSide(color: Color(0xFF181E3C)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              minimumSize: const Size(0, 30),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            minimumSize: const Size(0, 30),
-          ),
-          child: const Text(
-            'طلب استشارة',
-            style: TextStyle(
-              fontFamily: 'Almarai',
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primary,
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        // Attorney Request Button
-        OutlinedButton(
-          onPressed: onRepresentTap,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: const Color(0xFF181E3C),
-            backgroundColor: AppColors.primary,
-            side: const BorderSide(color: Color(0xFF181E3C)),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            minimumSize: const Size(0, 30),
-          ),
-          child: const Text(
-            'طلب توكيل',
-            style: TextStyle(
-              fontFamily: 'Almarai',
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: AppColors.white,
+            child: const Text(
+              'طلب توكيل',
+              style: TextStyle(
+                fontFamily: 'Almarai',
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: AppColors.white,
+              ),
             ),
           ),
-        ),
-      ],
+          ElevatedButton(
+            onPressed: () {
+              AppRouter.instance
+                  .navigateToConsultationRequest(context, lawyer: lawyer);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
+                side: BorderSide(color: AppColors.primary),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              minimumSize: const Size(0, 30),
+            ),
+            child: const Text(
+              'طلب استشارة',
+              style: TextStyle(
+                fontFamily: 'Almarai',
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -8,8 +8,10 @@ class CustomTextField extends StatefulWidget {
   final String? iconPath;
   final IconData? prefixIcon;
   final TextEditingController controller;
-  final TextInputType keyboardType;
+  final TextInputType? keyboardType;
   final bool isPassword;
+  final bool isMultiline;
+  final bool isNumeric;
   final String? Function(String?)? validator;
   final EdgeInsetsGeometry? contentPadding;
 
@@ -20,8 +22,10 @@ class CustomTextField extends StatefulWidget {
     this.iconPath,
     this.prefixIcon,
     required this.controller,
-    this.keyboardType = TextInputType.text,
+    this.keyboardType,
     this.isPassword = false,
+    this.isMultiline = false,
+    this.isNumeric = false,
     this.validator,
     this.contentPadding,
   }) : assert(
@@ -64,11 +68,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           child: TextFormField(
             controller: widget.controller,
-            keyboardType: widget.keyboardType,
-            obscureText: widget.isPassword ? _obscureText : false,
             validator: widget.validator,
+            obscureText: widget.isPassword ? _obscureText : false,
             textDirection: TextDirection.rtl,
             textAlign: TextAlign.right,
+            maxLines: widget.isMultiline ? null : 1,
+            keyboardType: widget.keyboardType ??
+                (widget.isMultiline
+                    ? TextInputType.multiline
+                    : widget.isNumeric
+                        ? TextInputType.number
+                        : TextInputType.text),
             style: const TextStyle(
               fontFamily: 'Almarai',
               color: AppColors.primary,
@@ -115,7 +125,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       : null,
               border: InputBorder.none,
               contentPadding: widget.contentPadding ??
-                  const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  (widget.isMultiline
+                      ? const EdgeInsets.all(16)
+                      : const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 16)),
             ),
           ),
         ),

@@ -39,11 +39,12 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
       body: SafeArea(
-        child: Column(
-          children: [
-            _buildAppBar(),
-            Expanded(
-              child: SingleChildScrollView(
+        child: SingleChildScrollView(
+          // Allow the whole page to scroll
+          child: Column(
+            children: [
+              _buildAppBar(),
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -81,8 +82,8 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 0),
@@ -226,13 +227,24 @@ class HomePage extends StatelessWidget {
 
   Widget _buildLawyersList(List<Lawyer> lawyers) {
     return SizedBox(
-      height: 260,
+      height: 285,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: lawyers.length,
         reverse: true, // Right to left
         itemBuilder: (context, index) {
-          return LawyerCard(lawyer: lawyers[index]);
+          return LawyerCard(
+            lawyer: lawyers[index],
+            onConsultTap: () {
+              // Navigate to consultation request page
+              AppRouter.instance.navigateToConsultationRequest(context,
+                  lawyer: lawyers[index]);
+            },
+            onRepresentTap: () {
+              // Navigate to attorney request page
+              AppRouter.instance.navigateToPublishCase(context);
+            },
+          );
         },
       ),
     );

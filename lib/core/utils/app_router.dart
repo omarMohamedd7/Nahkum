@@ -5,6 +5,11 @@ import '../../features/auth/presentation/views/register_screen.dart'; // ✅ Imp
 import '../../features/auth/presentation/views/otp_verification_screen.dart'; // ✅ Import OTP screen
 import '../../features/auth/presentation/views/reset_password_screen.dart'; // ✅ Import Reset Password screen
 import '../../features/auth/presentation/views/password_reset_success_screen.dart'; // ✅ Import Password Reset Success screen
+import '../../features/home/presentation/views/home_page.dart'; // ✅ Import home page
+import '../../features/home/presentation/views/lawyers_listing_page.dart'; // ✅ Import lawyers listing page
+import '../../features/case_request/presentation/views/publish_case_page.dart'; // ✅ Import publish case page
+import '../../features/consultation/presentation/views/consultation_request_page.dart'; // ✅ Import consultation request page
+import '../../features/home/domain/entities/lawyer.dart'; // ✅ Import lawyer entity
 
 class AppRouter {
   // Route names
@@ -17,6 +22,13 @@ class AppRouter {
       '/reset-password'; // ✅ Reset Password route name
   static const String passwordResetSuccessRoute =
       '/password-reset-success'; // ✅ Success route name
+  static const String homeRoute = '/home'; // ✅ Home route name
+  static const String publishCaseRoute =
+      '/publish-case'; // ✅ Publish case route name
+  static const String lawyersListingRoute =
+      '/lawyers-listing'; // ✅ Lawyers listing route name
+  static const String consultationRequestRoute =
+      '/consultation-request'; // ✅ Consultation request route name
 
   // Private constructor
   AppRouter._();
@@ -44,6 +56,7 @@ class AppRouter {
           builder: (_) => OtpVerificationScreen(
             email: args['email'] as String,
             phoneNumber: args['phoneNumber'] as String,
+            purpose: args['purpose'] as OtpVerificationPurpose,
           ),
         ); // ✅ OTP verification route
 
@@ -59,6 +72,29 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const PasswordResetSuccessScreen(),
         ); // ✅ Success screen route
+
+      case homeRoute:
+        return MaterialPageRoute(
+          builder: (_) => const HomePage(),
+        ); // ✅ Home page route
+
+      case publishCaseRoute:
+        return MaterialPageRoute(
+          builder: (_) => const PublishCasePage(),
+        ); // ✅ Publish case page route
+
+      case lawyersListingRoute:
+        return MaterialPageRoute(
+          builder: (_) => const LawyersListingPage(),
+        ); // ✅ Lawyers listing page route
+
+      case consultationRequestRoute:
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => ConsultationRequestPage(
+            lawyer: args?['lawyer'] as Lawyer?,
+          ),
+        ); // ✅ Consultation request page route
 
       default:
         return MaterialPageRoute(
@@ -84,13 +120,27 @@ class AppRouter {
     Navigator.of(context).pushNamed(registerRoute); // ✅ New method
   }
 
-  void navigateToOtpVerification(
+  // Navigate to OTP verification for login flow
+  void navigateToLoginOtpVerification(
       BuildContext context, String email, String phoneNumber) {
     Navigator.of(context).pushNamed(
       otpVerificationRoute,
       arguments: {
         'email': email,
         'phoneNumber': phoneNumber,
+        'purpose': OtpVerificationPurpose.login,
+      },
+    );
+  }
+
+  // Navigate to OTP verification for password reset flow
+  void navigateToResetPasswordOtpVerification(
+      BuildContext context, String email, String phoneNumber) {
+    Navigator.of(context).pushNamed(
+      otpVerificationRoute,
+      arguments: {
+        'email': email,
+        'purpose': OtpVerificationPurpose.resetPassword,
       },
     );
   }
@@ -108,12 +158,37 @@ class AppRouter {
     Navigator.of(context).pushNamed(passwordResetSuccessRoute);
   }
 
+  void navigateToHome(BuildContext context) {
+    Navigator.of(context).pushNamed(homeRoute);
+  }
+
+  void navigateToPublishCase(BuildContext context) {
+    Navigator.of(context).pushNamed(publishCaseRoute);
+  }
+
+  void navigateToLawyersListing(BuildContext context) {
+    Navigator.of(context).pushNamed(lawyersListingRoute);
+  }
+
+  void navigateToConsultationRequest(BuildContext context, {Lawyer? lawyer}) {
+    Navigator.of(context).pushNamed(
+      consultationRequestRoute,
+      arguments: {
+        'lawyer': lawyer,
+      },
+    );
+  }
+
   void replaceWithPasswordResetSuccess(BuildContext context) {
     Navigator.of(context).pushReplacementNamed(passwordResetSuccessRoute);
   }
 
   void replaceWithLogin(BuildContext context) {
     Navigator.of(context).pushReplacementNamed(loginRoute);
+  }
+
+  void replaceWithHome(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed(homeRoute);
   }
 
   void goBack(BuildContext context) {

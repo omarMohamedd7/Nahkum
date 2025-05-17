@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:legal_app/core/theme/app_colors.dart';
+import 'package:legal_app/core/utils/app_router.dart';
 import '../../domain/entities/lawyer.dart';
 
 class ListedLawyerCard extends StatelessWidget {
@@ -180,8 +181,39 @@ class ListedLawyerCard extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                AppRouter.instance
+                                    .navigateToConsultationRequest(context,
+                                        lawyer: lawyer);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  side: BorderSide(color: AppColors.primary),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                minimumSize: const Size(0, 32),
+                              ),
+                              child: const Text(
+                                'طلب استشارة',
+                                style: TextStyle(
+                                  fontFamily: 'Almarai',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
                             OutlinedButton(
-                              onPressed: onRepresentTap,
+                              onPressed: () {
+                                AppRouter.instance
+                                    .navigateToPublishCase(context);
+                              },
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: const Color(0xFF181E3C),
                                 backgroundColor: AppColors.primary,
@@ -201,30 +233,6 @@ class ListedLawyerCard extends StatelessWidget {
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.white,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            ElevatedButton(
-                              onPressed: onConsultTap,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                  side: BorderSide(color: AppColors.primary),
-                                ),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                minimumSize: const Size(0, 32),
-                              ),
-                              child: const Text(
-                                'طلب استشارة',
-                                style: TextStyle(
-                                  fontFamily: 'Almarai',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.primary,
                                 ),
                               ),
                             ),
