@@ -119,9 +119,9 @@ class _LawyersListingPageState extends State<LawyersListingPage> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.ScreenBackground,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.primaryLight,
           elevation: 0,
           centerTitle: true,
           title: const Text(

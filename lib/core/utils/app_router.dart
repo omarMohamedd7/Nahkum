@@ -12,6 +12,8 @@ import '../../features/Publish Case/presentation/views/publish_case.dart'; // �
 import '../../features/consultation/presentation/views/consultation_request_page.dart'; // ✅ Import consultation request page
 import '../../features/home/domain/entities/lawyer.dart'; // ✅ Import lawyer entity
 import '../../features/case_management/presentation/views/cases_page.dart'; // ✅ Import cases page
+import '../../features/case_management/presentation/views/case_details/case_details_page.dart'; // ✅ Import case details page
+import '../../features/case_management/domain/entities/case.dart'; // ✅ Import case entity
 
 class AppRouter {
   // Route names
@@ -34,6 +36,8 @@ class AppRouter {
   static const String consultationRequestRoute =
       '/consultation-request'; // ✅ Consultation request route name
   static const String casesRoute = '/cases'; // ✅ Cases route name
+  static const String caseDetailsRoute =
+      '/case-details'; // ✅ Case details route name
 
   // Private constructor
   AppRouter._();
@@ -110,6 +114,14 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const CasesPage(),
         ); // ✅ Cases page route
+
+      case caseDetailsRoute:
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => CaseDetailsPage(
+            caseItem: args['caseItem'] as Case,
+          ),
+        ); // ✅ Case details page route
 
       default:
         return MaterialPageRoute(
@@ -201,6 +213,15 @@ class AppRouter {
 
   void navigateToCasesPage(BuildContext context) {
     Navigator.of(context).pushNamed(casesRoute);
+  }
+
+  void navigateToCaseDetails(BuildContext context, Case caseItem) {
+    Navigator.of(context).pushNamed(
+      caseDetailsRoute,
+      arguments: {
+        'caseItem': caseItem,
+      },
+    );
   }
 
   void replaceWithPasswordResetSuccess(BuildContext context) {

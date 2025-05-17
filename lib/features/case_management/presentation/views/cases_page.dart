@@ -145,6 +145,11 @@ class _CasesPageState extends State<CasesPage>
     AppRouter.instance.navigateToPublishCase(context);
   }
 
+  void _navigateToCaseDetails(Case caseItem) {
+    // Navigate to case details page
+    AppRouter.instance.navigateToCaseDetails(context, caseItem);
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Case> currentCases = _getFilteredCasesList();
@@ -222,10 +227,7 @@ class _CasesPageState extends State<CasesPage>
       itemBuilder: (context, index) {
         return CaseCard(
           caseItem: cases[index],
-          onTap: () {
-            // Navigate to case details page
-            // Will be implemented in the next step
-          },
+          onTap: () => _navigateToCaseDetails(cases[index]),
         );
       },
     );
