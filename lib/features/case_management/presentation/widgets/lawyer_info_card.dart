@@ -15,7 +15,9 @@ class LawyerInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Positioned(
+      top: 357,
+      left: 24,
       child: Container(
         width: 392,
         height: customHeight ?? 74,
@@ -28,34 +30,29 @@ class LawyerInfoCard extends StatelessWidget {
           ),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 24.0),
-              child: Text(
-                lawyerName,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontFamily: 'Almarai',
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
+            const SizedBox(width: 24),
+            // Lawyer profile image
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: AssetImage(lawyerImageUrl),
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
             const SizedBox(width: 12),
-            Padding(
-              padding: const EdgeInsets.only(left: 24.0),
-              child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: AssetImage(lawyerImageUrl),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+            // Lawyer name
+            Text(
+              lawyerName,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontFamily: 'Almarai',
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],

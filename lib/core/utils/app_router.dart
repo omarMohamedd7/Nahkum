@@ -14,6 +14,12 @@ import '../../features/home/domain/entities/lawyer.dart'; // ✅ Import lawyer e
 import '../../features/case_management/presentation/views/cases_page.dart'; // ✅ Import cases page
 import '../../features/case_management/presentation/views/case_details/case_details_page.dart'; // ✅ Import case details page
 import '../../features/case_management/domain/entities/case.dart'; // ✅ Import case entity
+import '../../features/notifications/presentation/views/notifications_screen.dart'; // ✅ Import notifications screen
+import '../../features/settings/presentation/views/settings_screen.dart'; // ✅ Import settings screen
+import '../../features/profile/presentation/views/profile_screen.dart'; // ✅ Import profile screen
+import '../../features/chat/presentation/views/chats_screen.dart'; // ✅ Import chats screen
+import '../../features/chat/domain/entities/chat.dart'; // ✅ Import chat entity
+import '../../features/chat/presentation/views/chat_detail_screen.dart'; // ✅ Import chat detail screen
 
 class AppRouter {
   // Route names
@@ -38,6 +44,13 @@ class AppRouter {
   static const String casesRoute = '/cases'; // ✅ Cases route name
   static const String caseDetailsRoute =
       '/case-details'; // ✅ Case details route name
+  static const String notificationsRoute =
+      '/notifications'; // ✅ Notifications route name
+  static const String settingsRoute = '/settings'; // ✅ Settings route name
+  static const String profileRoute = '/profile'; // ✅ Profile route name
+  static const String chatsRoute = '/chats'; // ✅ Chats route name
+  static const String chatDetailRoute =
+      '/chat-detail'; // ✅ Chat detail route name
 
   // Private constructor
   AppRouter._();
@@ -122,6 +135,34 @@ class AppRouter {
             caseItem: args['caseItem'] as Case,
           ),
         ); // ✅ Case details page route
+
+      case notificationsRoute:
+        return MaterialPageRoute(
+          builder: (_) => const NotificationsScreen(),
+        ); // ✅ Notifications screen route
+
+      case settingsRoute:
+        return MaterialPageRoute(
+          builder: (_) => const SettingsScreen(),
+        ); // ✅ Settings screen route
+
+      case profileRoute:
+        return MaterialPageRoute(
+          builder: (_) => const ProfileScreen(),
+        ); // ✅ Profile screen route
+
+      case chatsRoute:
+        return MaterialPageRoute(
+          builder: (_) => const ChatsScreen(),
+        ); // ✅ Chats screen route
+
+      case chatDetailRoute:
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => ChatDetailScreen(
+            chat: args['chat'] as Chat,
+          ),
+        ); // ✅ Chat detail screen route
 
       default:
         return MaterialPageRoute(
@@ -238,5 +279,30 @@ class AppRouter {
 
   void goBack(BuildContext context) {
     Navigator.of(context).pop();
+  }
+
+  void navigateToNotifications(BuildContext context) {
+    Navigator.of(context).pushNamed(notificationsRoute);
+  }
+
+  void navigateToSettings(BuildContext context) {
+    Navigator.of(context).pushNamed(settingsRoute);
+  }
+
+  void navigateToProfile(BuildContext context) {
+    Navigator.of(context).pushNamed(profileRoute);
+  }
+
+  void navigateToChats(BuildContext context) {
+    Navigator.of(context).pushNamed(chatsRoute);
+  }
+
+  void navigateToChatDetail(BuildContext context, Chat chat) {
+    Navigator.of(context).pushNamed(
+      chatDetailRoute,
+      arguments: {
+        'chat': chat,
+      },
+    );
   }
 }

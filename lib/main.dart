@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'core/utils/app_router.dart';
 import 'core/widgets/splash_screen.dart';
 import 'features/auth/presentation/views/login_screen.dart';
+import 'features/profile/data/providers/user_profile_provider.dart';
 
 void main() {
   // Ensure Flutter is initialized
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const NahkumApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProfileProvider()),
+      ],
+      child: const NahkumApp(),
+    ),
+  );
 }
 
 class NahkumApp extends StatelessWidget {

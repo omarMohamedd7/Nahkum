@@ -42,6 +42,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
             icon: Icons.chat_bubble_outline,
             label: 'المحادثات',
             index: 1,
+            onTap: () {
+              if (currentIndex != 1) {
+                AppRouter.instance.navigateToChats(context);
+              }
+            },
           ),
           _buildNavItem(
             context: context,
@@ -62,6 +67,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
             icon: Icons.settings,
             label: 'الإعدادات',
             index: 4,
+            onTap: () {
+              if (currentIndex != 4) {
+                AppRouter.instance.navigateToSettings(context);
+              }
+            },
           ),
         ],
       ),

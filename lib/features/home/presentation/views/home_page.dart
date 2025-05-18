@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:path/path.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/app_router.dart';
 import '../widgets/lawyer_card.dart';
@@ -43,7 +44,7 @@ class HomePage extends StatelessWidget {
           // Allow the whole page to scroll
           child: Column(
             children: [
-              _buildAppBar(),
+              _buildAppBar(context),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
@@ -90,17 +91,22 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildAppBar() {
+  Widget _buildAppBar(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SvgPicture.asset(
-            'assets/images/notification.svg',
-            width: 24,
-            height: 24,
-            color: Colors.grey,
+          GestureDetector(
+            onTap: () {
+              AppRouter.instance.navigateToNotifications(context);
+            },
+            child: SvgPicture.asset(
+              'assets/images/notification.svg',
+              width: 24,
+              height: 24,
+              color: Colors.grey,
+            ),
           ),
           Row(
             children: [
