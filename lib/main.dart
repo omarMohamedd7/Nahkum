@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:legal_app/features/home/presentation/views/home_page.dart';
 import 'package:provider/provider.dart';
 import 'core/utils/app_router.dart';
 import 'core/widgets/splash_screen.dart';
@@ -35,16 +36,15 @@ class NahkumApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Almarai',
       ),
-      // Set up the router
+      // Temporarily go directly to home page
+
+      // Comment out the router setup for now
+
       onGenerateRoute: AppRouter.generateRoute,
       initialRoute: '/',
       routes: {
-        '/': (context) => SplashScreen(
-              nextScreen: const LoginScreen(),
-            ),
+        '/': (context) => const HomePage(),
       },
-      // Uncomment to bypass splash and go directly to login screen when needed
-      // home: const LoginScreen(),
     );
   }
 }

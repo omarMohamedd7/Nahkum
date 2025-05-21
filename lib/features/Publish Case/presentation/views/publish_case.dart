@@ -1,14 +1,16 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:legal_app/core/theme/app_colors.dart';
-import 'package:legal_app/core/widgets/custom_button.dart';
-import 'package:legal_app/core/widgets/custom_text_field.dart';
-import 'dart:io';
-
-// Import direct case request file upload section
-import '../../../direct case request/presentation/widgets/file_upload_section.dart';
-import '../../../direct case request/presentation/widgets/file_picker_dialog.dart';
+import '../../../../core/errors/failure.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/form_validator.dart';
+import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/custom_text_field.dart';
+// Import local widgets
 import '../widgets/case_type_dropdown.dart';
+import '../widgets/file_upload_section.dart';
+import '../widgets/file_picker_dialog.dart';
+// Remove conflicting imports from other features
 
 class PublishCase extends StatefulWidget {
   const PublishCase({super.key});
@@ -73,7 +75,8 @@ class _PublishCaseState extends State<PublishCase> {
         });
       }
     } catch (e) {
-      _showErrorMessage('فشل في رفع الملف: ${e.toString()}');
+      final failure = FileFailure.uploadFailed();
+      _showErrorMessage(failure.message);
     }
   }
 
@@ -95,7 +98,7 @@ class _PublishCaseState extends State<PublishCase> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red,
+        backgroundColor: AppColors.error,
       ),
     );
   }
@@ -177,12 +180,7 @@ class _PublishCaseState extends State<PublishCase> {
                     caseTypes: _caseTypes,
                     selectedType: _caseType,
                     onChanged: (value) => setState(() => _caseType = value),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'يرجى اختيار نوع القضية';
-                      }
-                      return null;
-                    },
+                    validator: FormValidators.validateCaseType,
                   ),
 
                   const SizedBox(height: 16),
@@ -193,12 +191,7 @@ class _PublishCaseState extends State<PublishCase> {
                     hintText: 'أكتب وصف القضية',
                     controller: _caseDescriptionController,
                     isMultiline: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'يرجى إدخال وصف القضية';
-                      }
-                      return null;
-                    },
+                    validator: FormValidators.validateCaseDescription,
                   ),
 
                   const SizedBox(height: 32),

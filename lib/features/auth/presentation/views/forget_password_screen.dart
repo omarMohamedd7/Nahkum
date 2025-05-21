@@ -4,6 +4,8 @@ import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_text_field.dart';
 import '../../../../core/utils/app_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../core/utils/app_styles.dart';
+import '../../../../core/utils/form_validator.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -80,13 +82,16 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     return Scaffold(
       backgroundColor: AppColors.ScreenBackground,
       appBar: AppBar(
-        leading: IconButton(
-          icon: SvgPicture.asset(
-            'assets/images/arrow-right.svg',
-            color: AppColors.primary,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: SvgPicture.asset(
+              'assets/images/arrow-right.svg',
+              color: AppColors.primary,
+            ),
+            onPressed: () => AppRouter.instance.goBack(context),
           ),
-          onPressed: () => AppRouter.instance.goBack(context),
-        ),
+        ],
         backgroundColor: AppColors.ScreenBackground,
         elevation: 0,
       ),
@@ -110,25 +115,34 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Header section
-                      Text(
-                        'هل نسيت كلمة المرور؟',
-                        style: TextStyle(
-                          fontFamily: 'Almarai',
-                          fontSize: isSmallScreen ? 24 : 30,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
+                      Container(
+                        width: double.infinity,
+                        child: Text(
+                          'هل نسيت كلمة المرور؟',
+                          style: TextStyle(
+                            fontFamily: 'Almarai',
+                            fontSize: isSmallScreen ? 24 : 30,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                          textAlign: TextAlign.right,
                         ),
-                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 12),
-                      Text(
-                        'يرجى إدخال بريدك الإلكتروني لاستعادة كلمة المرور',
-                        style: TextStyle(
-                          fontFamily: 'Almarai',
-                          fontSize: isSmallScreen ? 16 : 18,
-                          color: AppColors.textSecondary,
+                      Container(
+                        width: double.infinity,
+                        child: Text(
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          'يرجى إدخال بريدك الإلكتروني لاستعادة كلمة المرور',
+                          style: TextStyle(
+                            fontFamily: 'Almarai',
+                            fontSize: 16,
+                            color: AppColors.textSecondary,
+                            letterSpacing: -0.5,
+                          ),
+                          textAlign: TextAlign.right,
                         ),
-                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 48),
 
@@ -139,16 +153,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                         iconPath: 'assets/images/email_icon.svg',
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'يرجى إدخال البريد الإلكتروني';
-                          }
-                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                              .hasMatch(value)) {
-                            return 'يرجى إدخال بريد إلكتروني صحيح';
-                          }
-                          return null;
-                        },
+                        validator: FormValidators.validateEmail,
                       ),
                       const SizedBox(height: 32),
 

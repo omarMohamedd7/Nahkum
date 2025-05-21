@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:dotted_border/dotted_border.dart';
+import '../../../../core/theme/app_colors.dart';
 import 'dart:io';
 import 'file_list_view.dart';
 
@@ -16,73 +18,65 @@ class FileUploadSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'المرفقات',
-          style: TextStyle(
-            fontFamily: 'Almarai',
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF181E3C),
-          ),
+    return DottedBorder(
+      color: AppColors.textSecondary,
+      strokeWidth: 1,
+      dashPattern: const [8, 4],
+      borderType: BorderType.RRect,
+      radius: const Radius.circular(8),
+      padding: EdgeInsets.zero,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFC8A45D).withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
         ),
-        const SizedBox(height: 8),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFFBFBFBF)),
-          ),
-          child: Column(
-            children: [
-              // Upload button
-              InkWell(
-                onTap: onUploadTap,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFFBFBFBF)),
-                    borderRadius: BorderRadius.circular(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: onUploadTap,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'ارفع ملفات القضية',
+                    style: TextStyle(
+                      fontFamily: 'Almarai',
+                      fontSize: 14,
+                      color: AppColors.primary,
+                    ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.upload_file,
-                        color: Colors.grey[700],
-                        size: 24,
-                      ),
-                      const SizedBox(width: 8),
-                      const Text(
-                        'رفع ملف',
-                        style: TextStyle(
-                          fontFamily: 'Almarai',
-                          fontSize: 14,
-                          color: Color(0xFF181E3C),
-                        ),
-                      ),
-                    ],
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.upload_file,
+                    color: Colors.grey[700],
+                    size: 20,
                   ),
-                ),
+                ],
               ),
-
-              // Files list if any
-              if (selectedFiles.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                FileListView(
-                  files: selectedFiles,
-                  onRemove: onRemoveFile,
-                ),
-              ]
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'مستندات رسمية، تقارير، شكاوى صور وثائق، إثباتات، صور شخصية, ملفات صوتية',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Almarai',
+                fontSize: 11,
+                color: Color(0xFF777777),
+              ),
+            ),
+            if (selectedFiles.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              FileListView(
+                selectedFiles: selectedFiles,
+                onRemove: onRemoveFile,
+              ),
             ],
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

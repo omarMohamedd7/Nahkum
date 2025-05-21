@@ -1,6 +1,85 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 
-enum FileType { image, document, audio }
+enum FileType {
+  image,
+  document,
+  audio,
+}
+
+class FilePickerDialog extends StatelessWidget {
+  final Function(FileType) onSelectFileType;
+
+  const FilePickerDialog({
+    super.key,
+    required this.onSelectFileType,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'اختر نوع الملف',
+              style: TextStyle(
+                fontFamily: 'Almarai',
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
+            ),
+            const SizedBox(height: 20),
+            _buildOptionTile(
+              context,
+              icon: Icons.image,
+              title: 'صورة',
+              fileType: FileType.image,
+            ),
+            _buildOptionTile(
+              context,
+              icon: Icons.description,
+              title: 'مستند',
+              fileType: FileType.document,
+            ),
+            _buildOptionTile(
+              context,
+              icon: Icons.audiotrack,
+              title: 'ملف صوتي',
+              fileType: FileType.audio,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOptionTile(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required FileType fileType,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: AppColors.primary),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontFamily: 'Almarai',
+          fontSize: 14,
+        ),
+      ),
+      onTap: () {
+        Navigator.pop(context);
+        onSelectFileType(fileType);
+      },
+    );
+  }
+}
 
 void showFilePickerDialog(
   BuildContext context, {
@@ -9,99 +88,10 @@ void showFilePickerDialog(
   showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),
     builder: (BuildContext context) {
-      return Directionality(
-        textDirection: TextDirection.rtl,
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'اختر نوع الملف',
-                style: TextStyle(
-                  fontFamily: 'Almarai',
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF181E3C),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildOptionItem(
-                    context: context,
-                    icon: Icons.image,
-                    label: 'صورة',
-                    onTap: () {
-                      Navigator.pop(context);
-                      onSelectFileType(FileType.image);
-                    },
-                  ),
-                  _buildOptionItem(
-                    context: context,
-                    icon: Icons.description,
-                    label: 'ملف',
-                    onTap: () {
-                      Navigator.pop(context);
-                      onSelectFileType(FileType.document);
-                    },
-                  ),
-                  _buildOptionItem(
-                    context: context,
-                    icon: Icons.mic,
-                    label: 'صوت',
-                    onTap: () {
-                      Navigator.pop(context);
-                      onSelectFileType(FileType.audio);
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
+      return FilePickerDialog(onSelectFileType: onSelectFileType);
     },
-  );
-}
-
-Widget _buildOptionItem({
-  required BuildContext context,
-  required IconData icon,
-  required String label,
-  required VoidCallback onTap,
-}) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Column(
-      children: [
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: const Color(0xFF181E3C).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Icon(
-            icon,
-            color: const Color(0xFF181E3C),
-            size: 30,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(
-            fontFamily: 'Almarai',
-            fontSize: 14,
-            color: Color(0xFF181E3C),
-          ),
-        ),
-      ],
-    ),
   );
 }

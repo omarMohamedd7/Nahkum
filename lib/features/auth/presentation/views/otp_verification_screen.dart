@@ -172,13 +172,16 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     return Scaffold(
       backgroundColor: AppColors.ScreenBackground,
       appBar: AppBar(
-        leading: IconButton(
-          icon: SvgPicture.asset(
-            'assets/images/arrow-right.svg',
-            color: AppColors.primary,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: SvgPicture.asset(
+              'assets/images/arrow-right.svg',
+              color: AppColors.primary,
+            ),
+            onPressed: () => AppRouter.instance.goBack(context),
           ),
-          onPressed: () => AppRouter.instance.goBack(context),
-        ),
+        ],
         backgroundColor: AppColors.ScreenBackground,
         elevation: 0,
       ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:legal_app/core/utils/app_assets.dart';
 import '../../../../../core/theme/app_colors.dart';
 
 class LawyerInfoCard extends StatelessWidget {
@@ -33,17 +35,10 @@ class LawyerInfoCard extends StatelessWidget {
           children: [
             const SizedBox(width: 24),
             // Lawyer profile image
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: AssetImage(lawyerImageUrl),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+            CircleAvatar(
+                radius: 24,
+                backgroundColor: Colors.grey[200],
+                child: SvgPicture.asset(lawyerImageUrl)),
             const SizedBox(width: 12),
             // Lawyer name
             Text(

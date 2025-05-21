@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:legal_app/core/theme/app_colors.dart';
+import 'package:legal_app/core/utils/app_assets.dart';
 import 'package:legal_app/core/utils/app_router.dart';
 import '../../domain/entities/lawyer.dart';
 
@@ -94,7 +95,7 @@ class ListedLawyerCard extends StatelessWidget {
                           CircleAvatar(
                             radius: 30,
                             backgroundColor: Colors.grey[200],
-                            child: _buildLawyerImage(),
+                            child: SvgPicture.asset(AppAssets.edit),
                           ),
                         ],
                       ),
@@ -248,45 +249,5 @@ class ListedLawyerCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Widget _buildLawyerImage() {
-    try {
-      if (lawyer.imageUrl.endsWith('.svg')) {
-        return SvgPicture.asset(
-          lawyer.imageUrl,
-          width: 60,
-          height: 60,
-          fit: BoxFit.cover,
-          placeholderBuilder: (context) => const Icon(
-            Icons.person,
-            size: 40,
-            color: Colors.grey,
-          ),
-        );
-      } else if (lawyer.imageUrl.startsWith('http')) {
-        return Image.network(
-          lawyer.imageUrl,
-          width: 60,
-          height: 60,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return const Icon(Icons.person, size: 40, color: Colors.grey);
-          },
-        );
-      } else {
-        return Image.asset(
-          lawyer.imageUrl,
-          width: 60,
-          height: 60,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return const Icon(Icons.person, size: 40, color: Colors.grey);
-          },
-        );
-      }
-    } catch (e) {
-      return const Icon(Icons.person, size: 40, color: Colors.grey);
-    }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../theme/app_colors.dart';
+import '../utils/app_styles.dart';
 
 class CustomTextField extends StatefulWidget {
   final String hintText;
@@ -29,10 +30,11 @@ class CustomTextField extends StatefulWidget {
     this.validator,
     this.contentPadding,
   }) : assert(
-            iconPath != null ||
-                prefixIcon != null ||
-                (iconPath == null && prefixIcon == null),
-            'Provide either iconPath or prefixIcon, not both');
+          iconPath != null ||
+              prefixIcon != null ||
+              (iconPath == null && prefixIcon == null),
+          'Provide either iconPath or prefixIcon, not both',
+        );
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -43,7 +45,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final secondaryColor = AppColors.textSecondary;
+    final secondaryColor = const Color(0xFFBFBFBF);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,18 +55,20 @@ class _CustomTextFieldState extends State<CustomTextField> {
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Text(
               widget.labelText!,
-              style: const TextStyle(
-                fontFamily: 'Almarai',
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: AppColors.primary,
-              ),
+              style: AppStyles.labelText,
             ),
           ),
         Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: secondaryColor),
+            color: AppColors.white, // 👈 White background
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
           child: TextFormField(
             controller: widget.controller,
@@ -79,37 +83,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     : widget.isNumeric
                         ? TextInputType.number
                         : TextInputType.text),
-            style: const TextStyle(
-              fontFamily: 'Almarai',
-              color: AppColors.primary,
-              fontSize: 15,
-            ),
+            style: AppStyles.bodyMedium,
             decoration: InputDecoration(
               hintText: widget.hintText,
-              hintStyle: TextStyle(
+              hintStyle: AppStyles.bodyMedium.copyWith(
                 color: secondaryColor,
-                fontFamily: 'Almarai',
-                fontSize: 15,
               ),
-              prefixIcon: widget.isPassword
-                  ? GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: SvgPicture.asset(
-                          'assets/images/eye_icon.png',
-                          color: secondaryColor,
-                        ),
-                      ),
-                    )
-                  : null,
-              suffixIcon: widget.iconPath != null
+              prefixIcon: widget.iconPath != null
                   ? Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: AppStyles.paddingSmall,
                       child: SvgPicture.asset(
                         widget.iconPath!,
                         color: AppColors.primary,
@@ -121,12 +103,32 @@ class _CustomTextFieldState extends State<CustomTextField> {
                           color: AppColors.primary,
                         )
                       : null,
+              suffixIcon: widget.isPassword
+                  ? GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                      child: Padding(
+                        padding: AppStyles.paddingSmall,
+                        child: _obscureText
+                            ? SvgPicture.asset(
+                                'assets/images/eye-slash.svg',
+                                color: secondaryColor,
+                              )
+                            : Image.asset(
+                                'assets/images/eye_icon.png',
+                                color: secondaryColor,
+                              ),
+                      ),
+                    )
+                  : null,
               border: InputBorder.none,
               contentPadding: widget.contentPadding ??
                   (widget.isMultiline
-                      ? const EdgeInsets.all(16)
-                      : const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 16)),
+                      ? AppStyles.multilineInputFieldContentPadding
+                      : AppStyles.inputFieldContentPadding),
             ),
           ),
         ),

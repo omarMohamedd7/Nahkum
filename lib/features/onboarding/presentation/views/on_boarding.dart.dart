@@ -1,31 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:legal_app/core/theme/app_colors.dart';
+import 'package:legal_app/core/utils/app_router.dart';
 import 'package:legal_app/features/onboarding/presentation/views/widgets/RoleButton%20.dart';
 import 'package:legal_app/features/onboarding/presentation/views/widgets/continue_button.dart';
 import '../../../home/presentation/views/home_page.dart';
 import '../../data/models/user_role.dart';
 
-class RoleSelectionScreen extends StatefulWidget {
-  const RoleSelectionScreen({Key? key}) : super(key: key);
+class OnBoardingScreen extends StatefulWidget {
+  const OnBoardingScreen({Key? key}) : super(key: key);
 
   @override
-  State<RoleSelectionScreen> createState() => _RoleSelectionScreenState();
+  State<OnBoardingScreen> createState() => _OnBoardingScreenState();
 }
 
-class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
+class _OnBoardingScreenState extends State<OnBoardingScreen> {
   UserRole? selectedRole;
-
-  static const Color goldColor = Color(0xFFC8A45D);
-  static const Color backgroundColor = Color(0xFF181E3C);
 
   void selectRole(UserRole role) {
     setState(() => selectedRole = role);
   }
 
   void _navigateToHome() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const HomePage()),
-    );
+    AppRouter.instance.navigateToLogin(context);
   }
 
   @override
@@ -39,7 +36,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
           gradient: RadialGradient(
             center: const Alignment(0.5, 0.6),
             radius: 1.2,
-            colors: [backgroundColor.withOpacity(0.95), backgroundColor],
+            colors: [AppColors.primary.withOpacity(0.95), AppColors.primary],
           ),
         ),
         child: SafeArea(

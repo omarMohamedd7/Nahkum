@@ -22,22 +22,45 @@ class TermsCheckbox extends StatelessWidget {
           child: Checkbox(
             value: value,
             onChanged: onChanged,
-            activeColor: AppColors.primary,
+            activeColor: AppColors.goldDark,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4),
             ),
           ),
         ),
         const SizedBox(width: 8),
-        const Expanded(
-          child: Text(
-            'من خلال تسجيل الدخول، فإنك توافق على شروط الخدمة و اتفاقية معالجة البيانات',
-            style: TextStyle(
-              fontFamily: 'Almarai',
-              fontSize: 14,
-              color: AppColors.primary,
-            ),
+        Expanded(
+          child: RichText(
             textAlign: TextAlign.right,
+            text: const TextSpan(
+              style: TextStyle(
+                fontFamily: 'Almarai',
+                fontSize: 14,
+                color: AppColors.primary,
+              ),
+              children: [
+                TextSpan(
+                  text: 'من خلال تسجيل الدخول، فإنك توافق على ',
+                ),
+                TextSpan(
+                  text: 'شروط الخدمة',
+                  style: TextStyle(
+                    color: AppColors.goldLight,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextSpan(
+                  text: ' و ',
+                ),
+                TextSpan(
+                  text: 'اتفاقية معالجة البيانات',
+                  style: TextStyle(
+                    color: AppColors.goldLight,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

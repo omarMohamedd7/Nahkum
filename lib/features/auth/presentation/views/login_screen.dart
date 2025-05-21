@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:legal_app/core/utils/app_assets.dart';
+import '../../../../core/errors/failure.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/app_styles.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_text_field.dart';
 import '../manager/auth_controller.dart';
@@ -7,8 +10,8 @@ import '../widgets/forgot_password_link.dart';
 import '../widgets/login_header.dart';
 import '../widgets/sign_up_link.dart';
 import '../widgets/terms_checkbox.dart';
-import 'forget_password_screen.dart';
 import '../../../../core/utils/app_router.dart';
+import '../../../../core/utils/form_validator.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -43,7 +46,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
       setState(() => _isLoading = true);
 
-      // Placeholder for login logic
       try {
         await _authController.signInWithEmailAndPassword(
           _emailController.text.trim(),
@@ -58,7 +60,15 @@ class _LoginScreenState extends State<LoginScreen> {
           "+1234567890", // In a real app, this would come from the user's profile or auth response
         );
       } catch (e) {
-        _showMessage('فشل تسجيل الدخول', isError: true);
+        if (e is AuthFailure) {
+          _showMessage(e.message, isError: true);
+        } else if (e is NetworkFailure) {
+          _showMessage(e.message, isError: true);
+        } else if (e is ServerFailure) {
+          _showMessage(e.message, isError: true);
+        } else {
+          _showMessage('فشل تسجيل الدخول', isError: true);
+        }
       } finally {
         setState(() => _isLoading = false);
       }
@@ -73,12 +83,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = true);
 
-    // Placeholder for Google Sign-In
     try {
       await _authController.signInWithGoogle();
       _showMessage('تم تسجيل الدخول بنجاح عبر حساب جوجل');
     } catch (e) {
-      _showMessage('فشل تسجيل الدخول عبر حساب جوجل', isError: true);
+      if (e is AuthFailure) {
+        _showMessage(e.message, isError: true);
+      } else if (e is NetworkFailure) {
+        _showMessage(e.message, isError: true);
+      } else {
+        _showMessage('فشل تسجيل الدخول عبر حساب جوجل', isError: true);
+      }
     } finally {
       setState(() => _isLoading = false);
     }
@@ -107,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.ScreenBackground,
+      backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
         backgroundColor: AppColors.ScreenBackground,
         elevation: 0,
@@ -118,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
           textDirection: TextDirection.rtl,
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: AppStyles.horizontalPaddingLarge,
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -133,16 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           iconPath: 'assets/images/email_icon.svg',
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'يرجى إدخال البريد الإلكتروني';
-                            }
-                            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                .hasMatch(value)) {
-                              return 'يرجى إدخال بريد إلكتروني صحيح';
-                            }
-                            return null;
-                          },
+                          validator: FormValidators.validateEmail,
                         ),
                         const SizedBox(height: 16),
                         CustomTextField(
@@ -151,15 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           iconPath: 'assets/images/lock_icon.svg',
                           controller: _passwordController,
                           isPassword: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'يرجى إدخال كلمة المرور';
-                            }
-                            if (value.length < 6) {
-                              return 'كلمة المرور يجب أن تكون على الأقل 6 أحرف';
-                            }
-                            return null;
-                          },
+                          validator: FormValidators.validatePassword,
                         ),
                         const SizedBox(height: 8),
                         ForgotPasswordLink(onTap: _handleForgotPassword),

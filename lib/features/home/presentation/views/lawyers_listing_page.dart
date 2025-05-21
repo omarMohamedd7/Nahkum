@@ -235,7 +235,9 @@ class _LawyersListingPageState extends State<LawyersListingPage> {
             ),
           ],
         ),
-        bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 2),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          currentIndex: 2,
+        ),
       ),
     );
   }

@@ -37,8 +37,12 @@ dependencies:
   provider: ^6.1.1
   dotted_border: ^2.1.0
   image_picker: ^1.1.2
-  intl: ^0.20.2
-
+  intl: 0.19.0
+  equatable: ^2.0.7
+  auto_size_text: ^3.0.0
+  get: ^4.6.6  # Added GetX package
+  flutter_localizations:
+    sdk: flutter
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -64,6 +68,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/images/active navbar/
+    - assets/images/unactive navbar/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

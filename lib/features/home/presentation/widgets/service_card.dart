@@ -5,7 +5,7 @@ class ServiceCard extends StatelessWidget {
   final String title;
   final String description;
   final String buttonText;
-  final String iconPath;
+  final SvgPicture icon;
   final VoidCallback onTap;
 
   const ServiceCard({
@@ -13,7 +13,7 @@ class ServiceCard extends StatelessWidget {
     required this.title,
     required this.description,
     required this.buttonText,
-    required this.iconPath,
+    required this.icon,
     required this.onTap,
   });
 
@@ -29,19 +29,42 @@ class ServiceCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          // Title aligned to the right
+          Padding(
+            padding: const EdgeInsets.only(right: 50),
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontFamily: 'Almarai',
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF181E3C),
+              ),
+              textAlign: TextAlign.right,
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          // Row with description and icon
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontFamily: 'Almarai',
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF181E3C),
+              // Description
+              Expanded(
+                child: Text(
+                  description,
+                  style: const TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 11,
+                    color: Color(0xFF6D6D6D),
+                  ),
+                  textAlign: TextAlign.right,
                 ),
               ),
               const SizedBox(width: 12),
+              // Circle icon
               Container(
                 width: 40,
                 height: 40,
@@ -50,46 +73,41 @@ class ServiceCard extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: SvgPicture.asset(
-                    iconPath,
+                  child: SizedBox(
                     width: 20,
                     height: 20,
-                    color: const Color(0xFFC8A45D),
+                    child: icon,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          Text(
-            description,
-            style: const TextStyle(
-              fontFamily: 'Almarai',
-              fontSize: 11,
-              color: Color(0xFF6D6D6D),
-            ),
-            textAlign: TextAlign.right,
-          ),
+
           const SizedBox(height: 16),
+
+          // Button aligned to the left
           Align(
-            alignment: Alignment.centerRight,
-            child: ElevatedButton(
-              onPressed: onTap,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFC8A45D),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
+            alignment: Alignment.centerLeft,
+            child: Directionality(
+              textDirection: TextDirection.rtl,
+              child: ElevatedButton(
+                onPressed: onTap,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFC8A45D),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              ),
-              child: Text(
-                buttonText,
-                style: const TextStyle(
-                  fontFamily: 'Almarai',
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
+                child: Text(
+                  buttonText,
+                  style: const TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

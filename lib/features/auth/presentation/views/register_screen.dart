@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/app_styles.dart';
+import '../../../../core/utils/form_validator.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_text_field.dart';
 import '../widgets/terms_checkbox.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -139,6 +141,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       backgroundColor: AppColors.ScreenBackground,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: SvgPicture.asset(
@@ -172,25 +175,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Header section - responsive text sizes
-                      Text(
-                        'إنشاء حساب جديد',
-                        style: TextStyle(
-                          fontFamily: 'Almarai',
-                          fontSize: isSmallScreen ? 24 : 30,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
+                      Container(
+                        width: double.infinity,
+                        child: Text(
+                          'إنشاء حساب جديد',
+                          style: isSmallScreen
+                              ? AppStyles.headingLarge
+                              : AppStyles.headingLarge.copyWith(fontSize: 30),
+                          textAlign: TextAlign.right,
                         ),
-                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 12),
-                      Text(
-                        'للبدء، يرجى تعبئة البيانات التالية وإنشاء حساب جديد',
-                        style: TextStyle(
-                          fontFamily: 'Almarai',
-                          fontSize: isSmallScreen ? 16 : 18,
-                          color: AppColors.textSecondary,
+                      Container(
+                        width: double.infinity,
+                        child: Text(
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          'للبدء، يرجى تعبئة البيانات التالية',
+                          style: AppStyles.captionText.copyWith(
+                            fontSize: 18,
+                            letterSpacing: -0.5,
+                          ),
+                          textAlign: TextAlign.right,
                         ),
-                        textAlign: TextAlign.center,
                       ),
                       SizedBox(height: isSmallScreen ? 24 : 32),
 
@@ -202,7 +209,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           height: 86,
                           decoration: BoxDecoration(
                             color: AppColors.goldLight.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: AppStyles.radiusMedium,
                             border: Border.all(
                               color: AppColors.textSecondary,
                               width: 1,
@@ -227,11 +234,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     const SizedBox(height: 8),
                                     Text(
                                       'أضف صورتك الشخصية',
-                                      style: TextStyle(
-                                        fontFamily: 'Almarai',
-                                        fontSize: 14,
-                                        color: AppColors.primary,
-                                      ),
+                                      style: AppStyles.bodySmall,
                                       textAlign: TextAlign.center,
                                     ),
                                   ],
@@ -329,12 +332,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           labelText: 'أسم المستخدم',
           iconPath: 'assets/images/user.svg',
           controller: _usernameController,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'يرجى إدخال اسم المستخدم';
-            }
-            return null;
-          },
+          validator: FormValidators.validateUsername,
         ),
         const SizedBox(height: 16),
         CustomTextField(
@@ -343,15 +341,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           iconPath: 'assets/images/email_icon.svg',
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'يرجى إدخال البريد الإلكتروني';
-            }
-            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-              return 'يرجى إدخال بريد إلكتروني صحيح';
-            }
-            return null;
-          },
+          validator: FormValidators.validateEmail,
         ),
         const SizedBox(height: 16),
         CustomTextField(
@@ -360,12 +350,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           iconPath: 'assets/images/mobile.svg',
           controller: _phoneController,
           keyboardType: TextInputType.phone,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'يرجى إدخال رقم الهاتف';
-            }
-            return null;
-          },
+          validator: FormValidators.validatePhone,
         ),
         const SizedBox(height: 16),
         CustomTextField(
@@ -373,12 +358,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           labelText: 'المدينة',
           iconPath: 'assets/images/location.svg',
           controller: _cityController,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'يرجى إدخال المدينة';
-            }
-            return null;
-          },
+          validator: FormValidators.validateCity,
         ),
         const SizedBox(height: 16),
         CustomTextField(
@@ -387,15 +367,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           iconPath: 'assets/images/lock_icon.svg',
           controller: _passwordController,
           isPassword: true,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'يرجى إدخال كلمة المرور';
-            }
-            if (value.length < 6) {
-              return 'كلمة المرور يجب أن تكون على الأقل 6 أحرف';
-            }
-            return null;
-          },
+          validator: FormValidators.validatePassword,
         ),
         const SizedBox(height: 16),
         CustomTextField(
@@ -404,15 +376,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           iconPath: 'assets/images/lock_icon.svg',
           controller: _confirmPasswordController,
           isPassword: true,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'يرجى تأكيد كلمة المرور';
-            }
-            if (value != _passwordController.text) {
-              return 'كلمات المرور غير متطابقة';
-            }
-            return null;
-          },
+          validator: (value) => FormValidators.validateConfirmPassword(
+              value, _passwordController.text),
         ),
       ],
     );
@@ -432,12 +397,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             labelText: 'أسم المستخدم',
             iconPath: 'assets/images/user.svg',
             controller: _usernameController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'يرجى إدخال اسم المستخدم';
-              }
-              return null;
-            },
+            validator: FormValidators.validateUsername,
           ),
         ),
         SizedBox(
@@ -448,16 +408,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             iconPath: 'assets/images/email_icon.svg',
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'يرجى إدخال البريد الإلكتروني';
-              }
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                  .hasMatch(value)) {
-                return 'يرجى إدخال بريد إلكتروني صحيح';
-              }
-              return null;
-            },
+            validator: FormValidators.validateEmail,
           ),
         ),
         SizedBox(
@@ -468,12 +419,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             iconPath: 'assets/images/mobile.svg',
             controller: _phoneController,
             keyboardType: TextInputType.phone,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'يرجى إدخال رقم الهاتف';
-              }
-              return null;
-            },
+            validator: FormValidators.validatePhone,
           ),
         ),
         SizedBox(
@@ -483,12 +429,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             labelText: 'المدينة',
             iconPath: 'assets/images/location.svg',
             controller: _cityController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'يرجى إدخال المدينة';
-              }
-              return null;
-            },
+            validator: FormValidators.validateCity,
           ),
         ),
         SizedBox(
@@ -499,15 +440,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             iconPath: 'assets/images/lock_icon.svg',
             controller: _passwordController,
             isPassword: true,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'يرجى إدخال كلمة المرور';
-              }
-              if (value.length < 6) {
-                return 'كلمة المرور يجب أن تكون على الأقل 6 أحرف';
-              }
-              return null;
-            },
+            validator: FormValidators.validatePassword,
           ),
         ),
         SizedBox(
@@ -518,15 +451,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             iconPath: 'assets/images/lock_icon.svg',
             controller: _confirmPasswordController,
             isPassword: true,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'يرجى تأكيد كلمة المرور';
-              }
-              if (value != _passwordController.text) {
-                return 'كلمات المرور غير متطابقة';
-              }
-              return null;
-            },
+            validator: (value) => FormValidators.validateConfirmPassword(
+                value, _passwordController.text),
           ),
         ),
       ],

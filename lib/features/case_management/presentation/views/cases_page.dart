@@ -211,7 +211,9 @@ class _CasesPageState extends State<CasesPage>
             ),
           ],
         ),
-        bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 3),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          currentIndex: 3,
+        ),
       ),
     );
   }

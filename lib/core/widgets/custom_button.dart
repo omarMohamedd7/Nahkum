@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../theme/app_colors.dart';
+import '../utils/app_styles.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -44,13 +45,12 @@ class CustomButton extends StatelessWidget {
           onTap: isLoading ? null : onTap,
           borderRadius: BorderRadius.circular(borderRadius),
           child: Ink(
-            decoration: BoxDecoration(
-              color: buttonBackgroundColor,
-              borderRadius: BorderRadius.circular(borderRadius),
-              border: outlined
-                  ? Border.all(color: AppColors.primary, width: 1.0)
-                  : null,
-            ),
+            decoration: outlined
+                ? AppStyles.outlinedButtonDecoration
+                : BoxDecoration(
+                    color: buttonBackgroundColor,
+                    borderRadius: BorderRadius.circular(borderRadius),
+                  ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -74,11 +74,8 @@ class CustomButton extends StatelessWidget {
                 else
                   Text(
                     text,
-                    style: TextStyle(
+                    style: AppStyles.buttonText.copyWith(
                       color: buttonTextColor,
-                      fontFamily: 'Almarai',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
                     ),
                   ),
               ],

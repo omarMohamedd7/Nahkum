@@ -12,7 +12,7 @@ class ForgotPasswordLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.centerRight,
+      alignment: Alignment.centerLeft,
       child: TextButton(
         onPressed: onTap,
         style: TextButton.styleFrom(
@@ -26,7 +26,7 @@ class ForgotPasswordLink extends StatelessWidget {
             fontFamily: 'Almarai',
             fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: AppColors.goldDark,
+            color: AppColors.goldLight,
           ),
         ),
       ),

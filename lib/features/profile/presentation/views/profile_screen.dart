@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-
+import '../../../../core/errors/failure.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/app_router.dart';
+import '../../../../core/utils/app_styles.dart';
 import '../../../../core/widgets/custom_text_field.dart';
 import '../../data/providers/user_profile_provider.dart';
 
@@ -58,10 +59,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final failure = FileFailure.uploadFailed();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('حدث خطأ أثناء تحديث الصورة: $e'),
-            backgroundColor: Colors.red,
+            content: Text(failure.message),
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -89,7 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('تم حفظ التغييرات بنجاح'),
-            backgroundColor: Color(0xFF43A047),
+            backgroundColor: AppColors.success,
           ),
         );
       }
@@ -97,10 +99,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() => _isSaving = false);
 
       if (mounted) {
+        final failure = e is Failure
+            ? e
+            : const UnexpectedFailure(message: 'حدث خطأ أثناء حفظ التغييرات');
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('حدث خطأ أثناء حفظ التغييرات: $e'),
-            backgroundColor: Colors.red,
+            content: Text(failure.message),
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -114,12 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         const SizedBox(width: 16),
         const Text(
           'حساب المستخدم',
-          style: TextStyle(
-            fontFamily: 'Almarai',
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
+          style: AppStyles.headingMedium,
         ),
         GestureDetector(
           onTap: () => AppRouter.instance.goBack(context),
@@ -143,10 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Container(
               width: 100,
               height: 100,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey[300],
-              ),
+              decoration: AppStyles.roundedProfileImage,
               child: ClipOval(
                 child: _selectedImagePath != null
                     ? Image.file(
@@ -168,10 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Container(
                 height: 32,
                 width: 32,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.primary,
-                ),
+                decoration: AppStyles.editProfileButton,
                 child: Center(
                   child: SvgPicture.asset(
                     'assets/images/edit-2.svg',
@@ -187,20 +182,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
         const SizedBox(height: 16),
         Text(
           userProfile.name,
-          style: const TextStyle(
-            fontFamily: 'Almarai',
-            fontSize: 16,
+          style: AppStyles.bodyLarge.copyWith(
             fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           userProfile.email,
-          style: const TextStyle(
-            fontFamily: 'Almarai',
+          style: AppStyles.captionText.copyWith(
             fontSize: 12,
-            color: Color(0xFFB8B8B8),
           ),
         ),
       ],
@@ -248,12 +238,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Text(
                 label,
-                style: const TextStyle(
-                  fontFamily: 'Almarai',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: AppColors.primary,
-                ),
+                style: AppStyles.labelText,
               ),
               const SizedBox(width: 8),
               SvgPicture.asset(
@@ -267,30 +252,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         // Text field
         Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFFBFBFBF)),
-          ),
+          decoration: AppStyles.inputFieldDecoration,
           child: TextFormField(
             controller: controller,
             textDirection: TextDirection.rtl,
             textAlign: TextAlign.right,
             keyboardType: keyboardType,
-            style: const TextStyle(
-              fontFamily: 'Almarai',
-              color: AppColors.textPrimary,
-              fontSize: 15,
-            ),
+            style: AppStyles.bodyMedium,
             decoration: InputDecoration(
               hintText: hintText,
-              hintStyle: const TextStyle(
-                color: Color(0xFFB8B8B8),
-                fontFamily: 'Almarai',
-                fontSize: 15,
+              hintStyle: AppStyles.bodyMedium.copyWith(
+                color: const Color(0xFFB8B8B8),
               ),
               border: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: AppStyles.inputFieldContentPadding,
             ),
           ),
         ),

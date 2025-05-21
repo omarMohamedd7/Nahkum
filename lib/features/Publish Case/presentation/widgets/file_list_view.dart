@@ -1,75 +1,68 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 import 'dart:io';
-import 'package:path/path.dart' as p;
 
 class FileListView extends StatelessWidget {
-  final List<File> files;
-  final Function(int) onRemove;
+  final List<File> selectedFiles;
+  final Function(int)? onRemove;
 
   const FileListView({
     super.key,
-    required this.files,
-    required this.onRemove,
+    required this.selectedFiles,
+    this.onRemove,
   });
-
-  String _getFileExtension(String path) {
-    return p.extension(path).replaceAll('.', '').toUpperCase();
-  }
-
-  String _getFileName(String path) {
-    return p.basename(path);
-  }
-
-  IconData _getIconByExtension(String extension) {
-    switch (extension.toLowerCase()) {
-      case 'jpg':
-      case 'jpeg':
-      case 'png':
-        return Icons.image;
-      case 'pdf':
-        return Icons.picture_as_pdf;
-      case 'doc':
-      case 'docx':
-        return Icons.description;
-      case 'xls':
-      case 'xlsx':
-        return Icons.table_chart;
-      default:
-        return Icons.insert_drive_file;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: files.length,
+      itemCount: selectedFiles.length,
       itemBuilder: (context, index) {
-        final file = files[index];
-        final extension = _getFileExtension(file.path);
-        final fileName = _getFileName(file.path);
+        final file = selectedFiles[index];
+        final String fileName = file.path.split('/').last;
+        final String extension = fileName.split('.').last.toLowerCase();
+
+        // Choose icon based on file extension
+        Widget fileIcon;
+
+        switch (extension) {
+          case 'jpg':
+          case 'jpeg':
+          case 'png':
+            fileIcon = const Icon(Icons.image, color: AppColors.primary);
+            break;
+          case 'pdf':
+            fileIcon = const Icon(Icons.picture_as_pdf, color: Colors.red);
+            break;
+          case 'doc':
+          case 'docx':
+            fileIcon = const Icon(Icons.description, color: Colors.blue);
+            break;
+          case 'mp3':
+          case 'wav':
+            fileIcon = const Icon(Icons.audio_file, color: Colors.orange);
+            break;
+          default:
+            fileIcon =
+                const Icon(Icons.insert_drive_file, color: AppColors.primary);
+        }
 
         return Container(
           margin: const EdgeInsets.only(bottom: 8),
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: Colors.white,
             borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey.shade300),
           ),
           child: ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             leading: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: Colors.grey[300]!),
               ),
-              child: Icon(
-                _getIconByExtension(extension),
-                color: const Color(0xFF181E3C),
-              ),
+              child: fileIcon,
             ),
             title: Text(
               fileName,
@@ -82,20 +75,22 @@ class FileListView extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             subtitle: Text(
-              extension,
+              extension.toUpperCase(),
               style: TextStyle(
                 fontFamily: 'Almarai',
                 fontSize: 12,
                 color: Colors.grey[700],
               ),
             ),
-            trailing: IconButton(
-              icon: const Icon(
-                Icons.delete_outline,
-                color: Colors.red,
-              ),
-              onPressed: () => onRemove(index),
-            ),
+            trailing: onRemove != null
+                ? IconButton(
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      color: Colors.red,
+                    ),
+                    onPressed: () => onRemove!(index),
+                  )
+                : null,
           ),
         );
       },

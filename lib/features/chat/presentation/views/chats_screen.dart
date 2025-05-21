@@ -104,7 +104,9 @@ class ChatsScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 1),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: 1,
+      ),
     );
   }
 

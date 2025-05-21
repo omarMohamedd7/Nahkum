@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:legal_app/features/onboarding/presentation/views/on_boarding.dart.dart';
 import '../../features/auth/presentation/views/forget_password_screen.dart';
 import '../../features/auth/presentation/views/login_screen.dart';
 import '../../features/auth/presentation/views/register_screen.dart'; // ✅ Import register screen
@@ -12,7 +13,7 @@ import '../../features/Publish Case/presentation/views/publish_case.dart'; // �
 import '../../features/consultation/presentation/views/consultation_request_page.dart'; // ✅ Import consultation request page
 import '../../features/home/domain/entities/lawyer.dart'; // ✅ Import lawyer entity
 import '../../features/case_management/presentation/views/cases_page.dart'; // ✅ Import cases page
-import '../../features/case_management/presentation/views/case_details/case_details_page.dart'; // ✅ Import case details page
+import '../../features/case_management/presentation/views/case_details/details case.dart'; // ✅ Import case details page
 import '../../features/case_management/domain/entities/case.dart'; // ✅ Import case entity
 import '../../features/notifications/presentation/views/notifications_screen.dart'; // ✅ Import notifications screen
 import '../../features/settings/presentation/views/settings_screen.dart'; // ✅ Import settings screen
@@ -24,6 +25,7 @@ import '../../features/chat/presentation/views/chat_detail_screen.dart'; // ✅ 
 class AppRouter {
   // Route names
   static const String loginRoute = '/login';
+  static const String onboardingRoute = '/onboarding';
   static const String forgetPasswordRoute = '/forget-password';
   static const String registerRoute = '/register';
   static const String otpVerificationRoute =
@@ -151,6 +153,11 @@ class AppRouter {
           builder: (_) => const ProfileScreen(),
         ); // ✅ Profile screen route
 
+      case onboardingRoute:
+        return MaterialPageRoute(
+          builder: (_) => const OnBoardingScreen(),
+        ); // ✅ Onboarding screen route
+
       case chatsRoute:
         return MaterialPageRoute(
           builder: (_) => const ChatsScreen(),
@@ -212,6 +219,10 @@ class AppRouter {
         'purpose': OtpVerificationPurpose.resetPassword,
       },
     );
+  }
+
+  void navigateToOnboarding(BuildContext context) {
+    Navigator.of(context).pushNamed(onboardingRoute);
   }
 
   void navigateToResetPassword(BuildContext context, String email) {

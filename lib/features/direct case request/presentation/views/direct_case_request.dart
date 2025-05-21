@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:legal_app/core/errors/failure.dart';
 import 'package:legal_app/core/theme/app_colors.dart';
+import 'package:legal_app/core/utils/form_validator.dart';
 import 'package:legal_app/core/widgets/custom_button.dart';
 import 'package:legal_app/core/widgets/custom_text_field.dart';
 import 'dart:io';
 
 // Import extracted widgets
-import '../widgets/case_type_dropdown.dart';
 import '../widgets/file_upload_section.dart';
 import '../widgets/file_picker_dialog.dart';
 
@@ -33,16 +34,6 @@ class _DirectCaseRequestState extends State<DirectCaseRequest> {
   // Files
   List<File> _selectedFiles = [];
   bool _isSubmitting = false;
-
-  // Case types dropdown options
-  final List<String> _caseTypes = [
-    'جنائي',
-    'مدني',
-    'تجاري',
-    'أحوال شخصية',
-    'إداري',
-    'عمالي',
-  ];
 
   @override
   void dispose() {
@@ -81,7 +72,8 @@ class _DirectCaseRequestState extends State<DirectCaseRequest> {
         });
       }
     } catch (e) {
-      _showErrorMessage('فشل في رفع الملف: ${e.toString()}');
+      final failure = FileFailure.uploadFailed();
+      _showErrorMessage(failure.message);
     }
   }
 
@@ -103,7 +95,7 @@ class _DirectCaseRequestState extends State<DirectCaseRequest> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red,
+        backgroundColor: AppColors.error,
       ),
     );
   }
@@ -182,17 +174,6 @@ class _DirectCaseRequestState extends State<DirectCaseRequest> {
                   const SizedBox(height: 24),
 
                   // Case Type Dropdown
-                  CaseTypeDropdown(
-                    caseTypes: _caseTypes,
-                    selectedType: _caseType,
-                    onChanged: (value) => setState(() => _caseType = value),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'يرجى اختيار نوع القضية';
-                      }
-                      return null;
-                    },
-                  ),
 
                   const SizedBox(height: 16),
 
@@ -201,12 +182,7 @@ class _DirectCaseRequestState extends State<DirectCaseRequest> {
                     labelText: 'أسم المدعي',
                     hintText: 'أكتب اسم المدعي',
                     controller: _plaintiffNameController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'يرجى إدخال اسم المدعي';
-                      }
-                      return null;
-                    },
+                    validator: FormValidators.validatePlaintiffName,
                   ),
 
                   const SizedBox(height: 16),
@@ -216,12 +192,7 @@ class _DirectCaseRequestState extends State<DirectCaseRequest> {
                     labelText: 'أسم المدعي عليه',
                     hintText: 'أكتب اسم المدعي عليه',
                     controller: _defendantNameController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'يرجى إدخال اسم المدعي عليه';
-                      }
-                      return null;
-                    },
+                    validator: FormValidators.validateDefendantName,
                   ),
 
                   const SizedBox(height: 16),
@@ -233,6 +204,7 @@ class _DirectCaseRequestState extends State<DirectCaseRequest> {
                     controller: _caseNumberController,
                     isMultiline: false,
                     isNumeric: true,
+                    validator: (value) => FormValidators.validateNumeric(value),
                   ),
 
                   const SizedBox(height: 16),
@@ -243,12 +215,7 @@ class _DirectCaseRequestState extends State<DirectCaseRequest> {
                     hintText: 'أكتب وصف القضية',
                     controller: _caseDescriptionController,
                     isMultiline: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'يرجى إدخال وصف القضية';
-                      }
-                      return null;
-                    },
+                    validator: FormValidators.validateCaseDescription,
                   ),
 
                   const SizedBox(height: 32),

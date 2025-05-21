@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:legal_app/core/utils/app_assets.dart';
 import 'package:path/path.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/app_router.dart';
@@ -58,7 +59,10 @@ class HomePage extends StatelessWidget {
                       description:
                           'املأ تفاصيل قضيتك ليراجعها المحامون المتخصصون في مدينتك ويقدموا عروضهم المناسبة.',
                       buttonText: 'نشر قضية',
-                      iconPath: 'assets/images/case.svg',
+                      icon: SvgPicture.asset(
+                        AppAssets.document,
+                        color: const Color(0xFFC8A45D),
+                      ),
                       onTap: () {
                         // Navigate to the publish case page using AppRouter
                         AppRouter.instance.navigateToPublishCase(context);
@@ -71,13 +75,17 @@ class HomePage extends StatelessWidget {
                     const SizedBox(height: 24),
                     // Second service card
                     ServiceCard(
-                      title: 'طلب توكيل مباشر',
+                      title: ' طلب توكيل مباشر',
                       description:
                           'استعرض المحامين المتخصصين في مدينتك واختر الأنسب لمتابعة قضيتك.',
                       buttonText: 'عرض',
-                      iconPath: 'assets/images/user-profile-image.svg',
+                      icon: SvgPicture.asset(
+                        AppAssets.edit,
+                        color: const Color(0xFFC8A45D),
+                      ),
                       onTap: () {
-                        AppRouter.instance.navigateToLawyersListing(context);
+                        // Navigate to the publish case page using AppRouter
+                        AppRouter.instance.navigateToPublishCase(context);
                       },
                     ),
                   ],
@@ -87,7 +95,9 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: 0,
+      ),
     );
   }
 
@@ -108,33 +118,38 @@ class HomePage extends StatelessWidget {
               color: Colors.grey,
             ),
           ),
-          Row(
-            children: [
-              const Text(
-                'أسم المستخدم',
-                style: TextStyle(
-                  fontFamily: 'Almarai',
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF181E3C),
+          GestureDetector(
+            onTap: () {
+              AppRouter.instance.navigateToProfile(context);
+            },
+            child: Row(
+              children: [
+                const Text(
+                  'أسم المستخدم',
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF181E3C),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.grey.withOpacity(0.5)),
-                  color: Colors.grey[200],
+                const SizedBox(width: 8),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                    color: Colors.grey[200],
+                  ),
+                  child: Icon(
+                    Icons.person,
+                    size: 24,
+                    color: Colors.grey[400],
+                  ),
                 ),
-                child: Icon(
-                  Icons.person,
-                  size: 24,
-                  color: Colors.grey[400],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -143,45 +158,55 @@ class HomePage extends StatelessWidget {
 
   Widget _buildWelcomeSection() {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      width: double.infinity, // مطابق لفجما
+      height: 165, // مطابق لفجما
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
         color: const Color(0xFF181E3C).withOpacity(0.8),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              const Text(
-                'نحكم',
-                style: TextStyle(
-                  fontFamily: 'Almarai',
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+          // الشعار
+
+          const SizedBox(width: 16), // مسافة بين الشعار والنص
+
+          // النصوص (Expanded لتجنب overflow)
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text(
+                  'نحكم',
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.right,
                 ),
-              ),
-              const SizedBox(width: 10),
-              SvgPicture.asset(
-                'assets/images/Logo.svg',
-                width: 30,
-                height: 30,
-                color: const Color(0xFFC8A45D),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            'منصتك القانونية الموثوقة لربطك بمحامين مختصين وخدمات عدلية احترافية.',
-            style: TextStyle(
-              fontFamily: 'Almarai',
-              fontSize: 14,
-              color: Colors.white,
+                SizedBox(height: 10),
+                Text(
+                  'منصتك القانونية الموثوقة لربطك بمحامين مختصين وخدمات عدلية احترافية.',
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.right,
+                ),
+              ],
             ),
-            textAlign: TextAlign.right,
+          ),
+          SizedBox(width: 10),
+          SvgPicture.asset(
+            AppAssets.mainLogo,
+            width: 59,
+            height: 73,
+            color: AppColors.goldLight,
           ),
         ],
       ),

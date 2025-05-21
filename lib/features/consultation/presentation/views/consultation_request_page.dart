@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:legal_app/core/theme/app_colors.dart';
+import 'package:legal_app/core/utils/app_assets.dart';
 import 'package:legal_app/core/utils/app_router.dart';
 import 'package:legal_app/core/widgets/custom_button.dart';
 import 'package:legal_app/core/widgets/custom_text_field.dart';
@@ -130,17 +131,8 @@ class _ConsultationRequestPageState extends State<ConsultationRequestPage> {
               // Lawyer picture on the left
               CircleAvatar(
                 radius: 30,
-                backgroundImage: _lawyer.imageUrl.endsWith('.svg')
-                    ? null
-                    : AssetImage(_lawyer.imageUrl) as ImageProvider,
-                child: _lawyer.imageUrl.endsWith('.svg')
-                    ? SvgPicture.asset(
-                        _lawyer.imageUrl,
-                        width: 60,
-                        height: 60,
-                        fit: BoxFit.cover,
-                      )
-                    : null,
+                backgroundColor: Colors.grey[200],
+                child: SvgPicture.asset(AppAssets.edit),
               ),
               const SizedBox(width: 12),
 
@@ -213,7 +205,7 @@ class _ConsultationRequestPageState extends State<ConsultationRequestPage> {
               shape: BoxShape.circle,
             ),
             child: SvgPicture.asset(
-              'wallet-3.svg',
+              AppAssets.wallet,
               width: 24,
               height: 24,
               color: const Color(0xFFC8A45D),

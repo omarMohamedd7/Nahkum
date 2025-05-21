@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:legal_app/core/utils/app_assets.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class LoginHeader extends StatelessWidget {
@@ -16,30 +17,42 @@ class LoginHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.asset(
-          'assets/images/Logo.svg',
+          color: AppColors.goldLight,
+          AppAssets.mainLogo2,
           height: compact ? 90 : 100,
           width: compact ? 90 : 100,
         ),
         const SizedBox(height: 15),
-        const Text(
-          'نرحب بك في نحكم',
-          style: TextStyle(
-            fontFamily: 'Almarai',
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-            color: AppColors.primary,
+        Container(
+          width: double.infinity,
+          child: const Text(
+            'نرحب بك في نحكم',
+            style: TextStyle(
+              fontFamily: 'Almarai',
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primary,
+            ),
+            textAlign: TextAlign.right,
           ),
-          textAlign: TextAlign.center,
         ),
         const SizedBox(height: 10),
-        Text(
-          'الرجاء تسجيل الدخول للوصول إلى حسابك',
-          style: TextStyle(
-            fontFamily: 'Almarai',
-            fontSize: 18,
-            color: AppColors.textSecondary,
+        Container(
+          width: double.infinity,
+          child: Text(
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            'الرجاء تسجيل الدخول للوصول إلى حسابك',
+            style: TextStyle(
+              height: 22 / 18,
+              letterSpacing: 0,
+              fontWeight: FontWeight.w400,
+              fontFamily: 'Almarai',
+              fontSize: 16,
+              color: const Color(0xFF767676),
+            ),
+            textAlign: TextAlign.right,
           ),
-          textAlign: TextAlign.center,
         ),
       ],
     );
