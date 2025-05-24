@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:legal_app/features/home/presentation/views/home_page.dart';
-import 'package:provider/provider.dart';
-import 'core/utils/app_router.dart';
-import 'core/widgets/splash_screen.dart';
-import 'features/auth/presentation/views/login_screen.dart';
-import 'features/profile/data/providers/user_profile_provider.dart';
+import 'package:get/get.dart';
+import 'app/bindings/app_binding.dart';
+import 'app/routes/app_pages.dart';
+import 'app/routes/app_routes.dart';
 
 void main() {
   // Ensure Flutter is initialized
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => UserProfileProvider()),
-      ],
-      child: const NahkumApp(),
-    ),
-  );
+
+  runApp(const NahkumApp());
 }
 
 class NahkumApp extends StatelessWidget {
@@ -24,7 +16,7 @@ class NahkumApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Nahkum',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -36,15 +28,9 @@ class NahkumApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Almarai',
       ),
-      // Temporarily go directly to home page
-
-      // Comment out the router setup for now
-
-      onGenerateRoute: AppRouter.generateRoute,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const HomePage(),
-      },
+      initialBinding: AppBinding(),
+      initialRoute: AppPages.INITIAL,
+      getPages: AppPages.routes,
     );
   }
 }
