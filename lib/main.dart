@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'app/bindings/app_binding.dart';
+import 'app/core/bindings/app_binding.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 
@@ -29,7 +29,7 @@ class NahkumApp extends StatelessWidget {
         fontFamily: 'Almarai',
       ),
       initialBinding: AppBinding(),
-      initialRoute: AppPages.INITIAL,
+      initialRoute: AppPages.INITIAL, // Normal app flow
       getPages: AppPages.routes,
     );
   }

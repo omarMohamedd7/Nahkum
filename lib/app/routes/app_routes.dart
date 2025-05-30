@@ -19,4 +19,6 @@ abstract class Routes {
   static const RESET_PASSWORD = '/reset_password';
   static const PASSWORD_RESET_SUCCESS = '/password_reset_success';
   static const REGISTER_SUCCESS = '/register_success';
+  static const CASE_OFFER_DETAIL = '/case_offer_detail';
+  static const ROLE_TEST = '/role_test';
 }

@@ -1,35 +1,40 @@
 import 'package:get/get.dart';
-import 'package:legal_app/app/modules/auth/views/forget_password_screen.dart';
-import 'package:legal_app/app/modules/auth/views/login_screen.dart';
-import 'package:legal_app/app/modules/auth/views/otp_verification_screen.dart';
-import 'package:legal_app/app/modules/auth/views/password_reset_success_screen.dart';
-import 'package:legal_app/app/modules/auth/views/register_screen.dart';
-import 'package:legal_app/app/modules/auth/views/register_success_screen.dart';
-import 'package:legal_app/app/modules/auth/views/reset_password_screen.dart';
-import 'package:legal_app/app/modules/publish_case/bindings/publish_case_binding.dart';
-import 'package:legal_app/app/modules/home/widgets/lawyers_listing_page.dart';
+import 'package:legal_app/app/features/auth/presentation/views/forget_password_screen.dart';
+import 'package:legal_app/app/features/auth/presentation/views/login_screen.dart';
+import 'package:legal_app/app/features/auth/presentation/views/otp_verification_screen.dart';
+import 'package:legal_app/app/features/auth/presentation/views/password_reset_success_screen.dart';
+import 'package:legal_app/app/features/auth/presentation/views/register_screen.dart';
+import 'package:legal_app/app/features/auth/presentation/views/register_success_screen.dart';
+import 'package:legal_app/app/features/auth/presentation/views/reset_password_screen.dart';
+import 'package:legal_app/app/features/client/case_management/presentation/views/case_management_view.dart';
+import 'package:legal_app/app/features/client/publish_case/presentation/bindings/publish_case_binding.dart';
+import 'package:legal_app/app/features/client/home/presentation/widgets/lawyers_listing_page.dart';
+import 'package:legal_app/app/features/client/case_offer/presentation/views/case_offer_detail_view.dart';
+import 'package:legal_app/app/features/client/case_offer/presentation/bindings/case_offer_binding.dart';
+import 'package:legal_app/app/features/client/case_offer/presentation/views/case_offer_list_view.dart';
+import 'package:legal_app/app/features/client/case_offer/presentation/bindings/case_offer_list_binding.dart';
+import 'package:legal_app/app/features/shared/chat/presentation/bindings/chat_binding.dart';
+import 'package:legal_app/app/features/shared/chat/presentation/views/chat_detail_view.dart';
+import 'package:legal_app/app/features/shared/notifications/presentation/bindings/notifications_binding.dart';
+import 'package:legal_app/app/features/shared/onboarding/presentation/bindings/onboarding_binding.dart';
+import 'package:legal_app/app/features/shared/onboarding/presentation/views/role_test_page.dart';
+import 'package:legal_app/app/features/shared/profile/presentation/bindings/profile_binding.dart';
+import 'package:legal_app/app/features/shared/settings/presentation/bindings/settings_binding.dart';
 import 'app_routes.dart';
-import '../modules/home/bindings/home_binding.dart';
-import '../modules/home/views/home_view.dart';
-import '../modules/auth/bindings/auth_binding.dart';
-import '../modules/profile/bindings/profile_binding.dart';
-import '../modules/profile/views/profile_view.dart';
-import '../modules/chat/bindings/chat_binding.dart';
-import '../modules/chat/views/chats_view.dart';
-import '../modules/chat/views/chat_detail_view.dart';
-import '../modules/settings/bindings/settings_binding.dart';
-import '../modules/settings/views/settings_view.dart';
-import '../modules/notifications/bindings/notifications_binding.dart';
-import '../modules/notifications/views/notifications_view.dart';
-import '../modules/consultation/bindings/consultation_binding.dart';
-import '../modules/consultation/views/consultation_view.dart';
-import '../modules/case_management/bindings/case_management_binding.dart';
-import '../modules/case_management/views/case_management_view.dart';
-import '../modules/direct_case_request/bindings/direct_case_request_binding.dart';
-import '../modules/direct_case_request/views/direct_case_request_view.dart';
-import '../modules/publish_case/views/publish_case_view.dart';
-import '../modules/onboarding/bindings/onboarding_binding.dart';
-import '../modules/onboarding/views/onboarding_view.dart';
+import '../features/client/home/presentation/bindings/home_binding.dart';
+import '../features/client/home/presentation/views/home_view.dart';
+import '../features/auth/presentation/bindings/auth_binding.dart';
+import '../features/shared/profile/presentation/views/profile_view.dart';
+import '../features/shared/chat/presentation/views/chats_view.dart';
+import '../features/shared/settings/presentation/views/settings_view.dart';
+import '../features/shared/notifications/presentation/views/notifications_view.dart';
+import '../features/client/consultation/presentation/bindings/consultation_binding.dart';
+import '../features/client/consultation/presentation/views/consultation_view.dart';
+import '../features/client/case_management/presentation/bindings/case_management_binding.dart';
+import '../features/client/direct_case_request/presentation/bindings/direct_case_request_binding.dart';
+import '../features/client/direct_case_request/presentation/views/direct_case_request_view.dart';
+import '../features/client/publish_case/presentation/views/publish_case_view.dart';
+import '../features/shared/onboarding/presentation/views/onboarding_view.dart';
 
 class AppPages {
   static const INITIAL = Routes.ONBOARDING;
@@ -146,6 +151,21 @@ class AppPages {
       name: Routes.ONBOARDING,
       page: () => const OnboardingView(),
       binding: OnboardingBinding(),
+    ),
+    GetPage(
+      name: Routes.ROLE_TEST,
+      page: () => const RoleTestPage(),
+      binding: OnboardingBinding(),
+    ),
+    GetPage(
+      name: Routes.CASE_OFFER_DETAIL,
+      page: () => const CaseOfferDetailView(),
+      binding: CaseOfferBinding(),
+    ),
+    GetPage(
+      name: Routes.CASE_DETAILS,
+      page: () => const CaseOfferListView(),
+      binding: CaseOfferListBinding(),
     ),
     // Add more pages here
   ];

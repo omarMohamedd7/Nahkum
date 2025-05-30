@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:legal_app/app/utils/app_assets.dart';
+import 'package:legal_app/app/core/utils/app_assets.dart';
 
 class TestSvgIcons extends StatelessWidget {
   const TestSvgIcons({super.key});
