@@ -7,7 +7,7 @@ class CaseRequestModel {
   final String defendantName;
   final String caseNumber;
   final String caseDescription;
-  final List<File> attachment;
+  final List<File>? attachment;
   final DateTime? createdAt;
 
   CaseRequestModel({
@@ -51,7 +51,7 @@ class CaseRequestModel {
       'defendantName': defendantName,
       'caseNumber': caseNumber,
       'caseDescription': caseDescription,
-      'filesCount': attachment.length,
+      'filesCount': attachment?.length ?? 0,
       'createdAt': createdAt?.toIso8601String(),
     };
   }

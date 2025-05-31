@@ -110,7 +110,7 @@ class ConsultationView extends GetView<ConsultationController> {
                 Row(
                   children: [
                     Text(
-                      lawyer.location,
+                      lawyer.city,
                       style: const TextStyle(
                         fontFamily: 'Almarai',
                         fontSize: 11,
