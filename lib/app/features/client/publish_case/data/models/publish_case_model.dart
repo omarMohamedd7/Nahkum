@@ -7,6 +7,7 @@ class PublishCaseModel {
   final List<File> attachments;
   final DateTime createdAt;
   final String status;
+  final String? targetCity;
 
   PublishCaseModel({
     this.id,
@@ -15,6 +16,7 @@ class PublishCaseModel {
     required this.attachments,
     DateTime? createdAt,
     this.status = 'pending',
+    this.targetCity,
   }) : createdAt = createdAt ?? DateTime.now();
 
   PublishCaseModel copyWith({
@@ -24,6 +26,7 @@ class PublishCaseModel {
     List<File>? attachments,
     DateTime? createdAt,
     String? status,
+    String? targetCity,
   }) {
     return PublishCaseModel(
       id: id ?? this.id,
@@ -32,6 +35,7 @@ class PublishCaseModel {
       attachments: attachments ?? this.attachments,
       createdAt: createdAt ?? this.createdAt,
       status: status ?? this.status,
+      targetCity: targetCity ?? this.targetCity,
     );
   }
 
@@ -43,6 +47,7 @@ class PublishCaseModel {
       'attachmentsCount': attachments.length,
       'createdAt': createdAt.toIso8601String(),
       'status': status,
+      'targetCity': targetCity,
     };
   }
 
@@ -54,6 +59,7 @@ class PublishCaseModel {
       attachments: [], // Files need to be loaded separately
       createdAt: DateTime.parse(json['createdAt']),
       status: json['status'],
+      targetCity: json['targetCity'],
     );
   }
 }

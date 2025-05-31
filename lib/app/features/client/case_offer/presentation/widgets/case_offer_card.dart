@@ -20,10 +20,10 @@ class CaseOfferCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color(0xFFF5FBFF),
+          color: AppColors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: const Color(0xFFBFBFBF),
+            color: AppColors.primary,
             width: 1,
           ),
         ),

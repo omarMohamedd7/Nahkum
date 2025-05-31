@@ -16,6 +16,7 @@ class PublishCaseController extends GetxController {
 
   // Reactive variables
   final RxString caseType = ''.obs;
+  final RxString targetCity = ''.obs;
   final RxList<File> selectedFiles = <File>[].obs;
   final RxBool isSubmitting = false.obs;
 
@@ -29,6 +30,15 @@ class PublishCaseController extends GetxController {
     'عمالي',
   ];
 
+  // City dropdown options
+  final List<String> cities = [
+    'دمشق',
+    'حلب',
+    'حماه',
+    'اللاذقية',
+    'دير الزور',
+  ];
+
   @override
   void onClose() {
     caseDescriptionController.dispose();
@@ -37,6 +47,10 @@ class PublishCaseController extends GetxController {
 
   void setCaseType(String? value) {
     caseType.value = value ?? '';
+  }
+
+  void setTargetCity(String? value) {
+    targetCity.value = value ?? '';
   }
 
   Future<void> handleFilePickerSelect(FileType fileType) async {
@@ -107,6 +121,7 @@ class PublishCaseController extends GetxController {
         caseType: caseType.value,
         description: caseDescriptionController.text,
         attachments: selectedFiles,
+        targetCity: targetCity.value.isNotEmpty ? targetCity.value : null,
       );
 
       // Simulate API call

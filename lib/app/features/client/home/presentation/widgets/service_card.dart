@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:legal_app/app/core/theme/app_colors.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:legal_app/app/core/utils/app_assets.dart';
 
 class ServiceCard extends StatelessWidget {
   final String title;

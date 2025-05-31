@@ -7,6 +7,7 @@ import '../../../../../shared/widgets/custom_button.dart';
 import '../../../../../shared/widgets/custom_text_field.dart';
 import '../controllers/publish_case_controller.dart';
 import '../widgets/case_type_dropdown.dart';
+import '../widgets/city_dropdown.dart';
 import '../widgets/file_picker_dialog.dart';
 import '../widgets/file_upload_section.dart';
 
@@ -62,6 +63,11 @@ class PublishCaseView extends GetView<PublishCaseController> {
 
                       // Case Type Dropdown
                       const CaseTypeDropdown(),
+
+                      const SizedBox(height: 16),
+
+                      // City Dropdown
+                      const CityDropdown(),
 
                       const SizedBox(height: 16),
 
