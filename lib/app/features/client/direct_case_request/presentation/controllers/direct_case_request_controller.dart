@@ -111,7 +111,7 @@ class DirectCaseRequestController extends GetxController {
           defendantName: defendantNameController.text,
           caseNumber: caseNumberController.text,
           caseDescription: caseDescriptionController.text,
-          files: selectedFiles,
+          attachment: selectedFiles,
           createdAt: DateTime.now(),
         );
 
