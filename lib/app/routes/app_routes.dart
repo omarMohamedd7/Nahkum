@@ -21,4 +21,10 @@ abstract class Routes {
   static const REGISTER_SUCCESS = '/register_success';
   static const CASE_OFFER_DETAIL = '/case_offer_detail';
   static const ROLE_TEST = '/role_test';
+  static const Judge_HOME = '/Judge_HOME';
+  static const Tasks_View = '/Tasks_View';
+  static const Video_Analysis_View = '/Video_Analysis_View';
+  static const Blogs_View = '/Blogs_View';
+  static const Settings_View = '/Settings_View';
+  static const Agencies_View = '/Agencies_View';
 }

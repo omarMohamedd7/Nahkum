@@ -6,19 +6,18 @@ import 'package:legal_app/app/core/utils/app_assets.dart';
 import 'package:legal_app/app/features/shared/onboarding/data/models/user_role.dart';
 import 'package:legal_app/app/routes/app_routes.dart';
 
-class CustomBottomNavigationBar extends StatelessWidget {
+class CustomBottomNavigationJudgeBar extends StatelessWidget {
   final int currentIndex;
 
-  const CustomBottomNavigationBar({
+  const CustomBottomNavigationJudgeBar({
     Key? key,
     required this.currentIndex,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Fixed list of nav items to ensure consistent order
     final navItems = [
-      _NavItemData(
+      NavItemData(
         activeIcon: AppAssets.activeHome,
         inactiveIcon: AppAssets.unactiveHome,
         fallbackIcon: Icons.home,
@@ -30,45 +29,41 @@ class CustomBottomNavigationBar extends StatelessWidget {
           }
         },
       ),
-      _NavItemData(
+      NavItemData(
         activeIcon: AppAssets.activeMessage,
         inactiveIcon: AppAssets.unactiveMessage,
         fallbackIcon: Icons.message,
-        label: 'المحادثات',
+        label: 'مراجع',
         index: 1,
         onTap: () {
           if (currentIndex != 1) {
-            Get.offAllNamed(Routes.CHATS);
+            Get.offAllNamed(Routes.Blogs_View);
           }
         },
       ),
-      _NavItemData(
+      NavItemData(
         activeIcon: AppAssets.activeJudge,
         inactiveIcon: AppAssets.unactiveJudge,
         fallbackIcon: Icons.gavel,
-        label: 'المحامين',
+        label: 'مهامي',
         index: 2,
         onTap: () {
           if (currentIndex != 2) {
-            Get.offAllNamed(Routes.LAWYERS_LISTING);
+            Get.offAllNamed(Routes.Tasks_View);
           }
         },
       ),
-      _NavItemData(
+      NavItemData(
         activeIcon: AppAssets.activeFolderOpen,
         inactiveIcon: AppAssets.unactiveFolderOpen,
         fallbackIcon: Icons.folder_open,
-        label: 'قضاياي',
+        label: 'تحليل فيديو',
         index: 3,
         onTap: () {
-          if (currentIndex != 3) {
-            // Instead of removing everything from the stack, just navigate
-            Get.until((route) => route.isFirst);
-            Get.toNamed(Routes.CASES);
-          }
+          Get.toNamed(Routes.Video_Analysis_View);
         },
       ),
-      _NavItemData(
+      NavItemData(
         activeIcon: AppAssets.activeSetting,
         inactiveIcon: AppAssets.unactiveSetting,
         fallbackIcon: Icons.settings,
@@ -76,8 +71,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
         index: 4,
         onTap: () {
           if (currentIndex != 4) {
-            Get.offAllNamed(Routes.SETTINGS,
-              arguments: {'userRole': UserRole.client},
+            Get.offAllNamed(
+              Routes.SETTINGS,
+              arguments: {'userRole': UserRole.judge},
             );
           }
         },
@@ -85,7 +81,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     ];
 
     return Directionality(
-      textDirection: TextDirection.ltr, // Override RTL for bottom nav
+      textDirection: TextDirection.ltr,
       child: Container(
         height: 60,
         decoration: BoxDecoration(
@@ -114,7 +110,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   Widget _buildNavItem({
     required BuildContext context,
-    required _NavItemData data,
+    required NavItemData data,
     required bool isSelected,
   }) {
     final color = isSelected ? AppColors.primary : const Color(0xFFB8B8B8);
@@ -122,7 +118,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return InkWell(
       onTap: data.onTap,
       child: Container(
-        width: MediaQuery.of(context).size.width / 5, // Ensure equal widths
+        width: MediaQuery.of(context).size.width / 5,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -152,8 +148,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   }
 }
 
-// Helper class to store nav item data
-class _NavItemData {
+class NavItemData {
   final String activeIcon;
   final String inactiveIcon;
   final IconData fallbackIcon;
@@ -161,7 +156,7 @@ class _NavItemData {
   final int index;
   final VoidCallback onTap;
 
-  _NavItemData({
+  NavItemData({
     required this.activeIcon,
     required this.inactiveIcon,
     required this.fallbackIcon,

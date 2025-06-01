@@ -1,4 +1,9 @@
 import 'package:get/get.dart';
+import 'package:legal_app/app/features/Judge/home/presentation/views/blogs_view.dart';
+import 'package:legal_app/app/features/Judge/home/presentation/views/judge_home_view.dart';
+import 'package:legal_app/app/features/Judge/home/presentation/views/tasks_view.dart';
+import 'package:legal_app/app/features/Judge/home/presentation/views/video_analysis_view.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/views/agencies_view.dart';
 import 'package:legal_app/app/features/auth/presentation/views/forget_password_screen.dart';
 import 'package:legal_app/app/features/auth/presentation/views/login_screen.dart';
 import 'package:legal_app/app/features/auth/presentation/views/otp_verification_screen.dart';
@@ -41,26 +46,31 @@ class AppPages {
 
   static final routes = [
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.HOME,
       page: () => HomeView(),
       binding: HomeBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.LOGIN,
       page: () => LoginScreen(),
       binding: AuthBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.REGISTER,
       page: () => RegisterScreen(),
       binding: AuthBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.FORGOT_PASSWORD,
       page: () => ForgetPasswordScreen(),
       binding: AuthBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.OTP_VERIFICATION,
       page: () {
         final args = Get.arguments ?? {};
@@ -73,6 +83,7 @@ class AppPages {
       binding: AuthBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.RESET_PASSWORD,
       page: () {
         final args = Get.arguments ?? {};
@@ -83,11 +94,13 @@ class AppPages {
       binding: AuthBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.PASSWORD_RESET_SUCCESS,
       page: () => const PasswordResetSuccessScreen(),
       binding: AuthBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.REGISTER_SUCCESS,
       page: () {
         final args = Get.arguments ?? {};
@@ -98,75 +111,118 @@ class AppPages {
       binding: AuthBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.PROFILE,
       page: () => ProfileView(),
       binding: ProfileBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.CHATS,
       page: () => ChatsView(),
       binding: ChatBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.CHAT_DETAIL,
       page: () => ChatDetailView(),
       binding: ChatBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.SETTINGS,
       page: () => const SettingsView(),
       binding: SettingsBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.NOTIFICATIONS,
       page: () => const NotificationsView(),
       binding: NotificationsBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.CONSULTATION_REQUEST,
       page: () => const ConsultationView(),
       binding: ConsultationBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.CASES,
       page: () => const CaseManagementView(),
       binding: CaseManagementBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.DIRECT_CASE_REQUEST,
       page: () => const DirectCaseRequestView(),
       binding: DirectCaseRequestBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.PUBLISH_CASE,
       page: () => const PublishCaseView(),
       binding: PublishCaseBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.LAWYERS_LISTING,
       page: () => const LawyersListingPage(),
       binding: HomeBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.ONBOARDING,
       page: () => const OnboardingView(),
       binding: OnboardingBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.ROLE_TEST,
       page: () => const RoleTestPage(),
       binding: OnboardingBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.CASE_OFFER_DETAIL,
       page: () => const CaseOfferDetailView(),
       binding: CaseOfferBinding(),
     ),
     GetPage(
+      transition: Transition.noTransition,
       name: Routes.CASE_DETAILS,
       page: () => const CaseOfferListView(),
       binding: CaseOfferListBinding(),
     ),
-    // Add more pages here
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.Judge_HOME,
+      page: () => const JudgeHomeView(),
+      //binding: JudgeHomeView(),
+    ),
+     GetPage(
+      transition: Transition.noTransition,
+      name: Routes.Tasks_View,
+      page: () => const TasksView(),
+      //binding: JudgeHomeView(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.Video_Analysis_View,
+      page: () => const VideoAnalysisView(),
+      //binding: JudgeHomeView(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.Blogs_View,
+      page: () => const BlogsView(),
+      //binding: JudgeHomeView(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.Agencies_View,
+      page: () => const AgenciesView(),
+      //binding: JudgeHomeView(),
+    ),
   ];
 }

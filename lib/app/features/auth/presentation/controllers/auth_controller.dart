@@ -226,7 +226,11 @@ class AuthController extends GetxController {
       showMessage('تم تسجيل الدخول بنجاح عبر حساب جوجل');
 
       // Navigate to home
-      Get.offAllNamed(Routes.HOME);
+      if (userRole.value == UserRole.client) {
+        Get.offAllNamed(Routes.HOME);
+      } else if (userRole.value == UserRole.judge) {
+        Get.offAllNamed(Routes.Judge_HOME);
+      }
     } catch (e) {
       if (e is AuthFailure) {
         showMessage(e.message, isError: true);

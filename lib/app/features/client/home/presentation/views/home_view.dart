@@ -64,7 +64,6 @@ class HomeView extends GetView<HomeController> {
                       ),
                       onTap: () => controller.navigateToLawyersListing(),
                     ),
-                    // Add bottom padding for scroll safety
                     SizedBox(height: screenWidth * 0.04),
                   ],
                 ),

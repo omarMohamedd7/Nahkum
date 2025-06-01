@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/views/case_details_view.dart';
 import 'app/core/bindings/app_binding.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
@@ -28,8 +29,9 @@ class NahkumApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Almarai',
       ),
-      initialBinding: AppBinding(),
-      initialRoute: AppPages.INITIAL, // Normal app flow
+      //initialBinding: AppBinding(),
+      //initialRoute: AppPages.INITIAL, // Normal app flow
+      home: CaseDetailsView(),
       getPages: AppPages.routes,
     );
   }
