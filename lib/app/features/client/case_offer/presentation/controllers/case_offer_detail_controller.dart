@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import '../../data/models/lawyer.dart';
+import 'package:legal_app/app/features/client/home/data/models/lawyer_model.dart';
 import '../../data/models/case_offer.dart';
 import '../../../../../routes/app_routes.dart';
 
@@ -44,11 +44,12 @@ class CaseOfferDetailController extends GetxController {
     // For now, we'll return mock data
     lawyer.value = Lawyer(
       id: lawyerId,
+      description: 'محامي جنائي',
+      price: 1000,
       name: 'أسم المحامي',
       specialization: 'محامي جنائي',
-      location: 'الرياض',
+      city: 'الرياض',
       imageUrl: 'assets/images/lawyer_profile.png',
-      rating: 4.8,
     );
   }
 

@@ -7,7 +7,7 @@ class CaseRequestModel {
   final String defendantName;
   final String caseNumber;
   final String caseDescription;
-  final List<File> files;
+  final List<File>? attachment;
   final DateTime? createdAt;
 
   CaseRequestModel({
@@ -17,7 +17,7 @@ class CaseRequestModel {
     required this.defendantName,
     required this.caseNumber,
     required this.caseDescription,
-    required this.files,
+    required this.attachment,
     this.createdAt,
   });
 
@@ -38,7 +38,7 @@ class CaseRequestModel {
       defendantName: defendantName ?? this.defendantName,
       caseNumber: caseNumber ?? this.caseNumber,
       caseDescription: caseDescription ?? this.caseDescription,
-      files: files ?? this.files,
+      attachment: files ?? this.attachment,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -51,7 +51,7 @@ class CaseRequestModel {
       'defendantName': defendantName,
       'caseNumber': caseNumber,
       'caseDescription': caseDescription,
-      'filesCount': files.length,
+      'filesCount': attachment?.length ?? 0,
       'createdAt': createdAt?.toIso8601String(),
     };
   }

@@ -1,7 +1,7 @@
 class Lawyer {
   final String id;
   final String name;
-  final String location;
+  final String city;
   final String description;
   final double price;
   final String imageUrl;
@@ -10,7 +10,7 @@ class Lawyer {
   const Lawyer({
     required this.id,
     required this.name,
-    required this.location,
+    required this.city,
     required this.description,
     required this.price,
     required this.imageUrl,
@@ -19,6 +19,6 @@ class Lawyer {
 
   @override
   String toString() {
-    return 'Lawyer(id: $id, name: $name, location: $location, specialization: $specialization)';
+    return 'Lawyer(id: $id, name: $name, location: $city, specialization: $specialization)';
   }
 }

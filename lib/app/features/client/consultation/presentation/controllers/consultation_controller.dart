@@ -26,7 +26,7 @@ class ConsultationController extends GetxController {
         selectedLawyer.value = LawyerModel(
           id: coreLawyer.id,
           name: coreLawyer.name,
-          location: coreLawyer.location,
+          city: coreLawyer.location,
           description: coreLawyer.description,
           price: coreLawyer.price,
           imageUrl: coreLawyer.imageUrl,
@@ -44,7 +44,7 @@ class ConsultationController extends GetxController {
             selectedLawyer.value = LawyerModel(
               id: lawyer.id,
               name: lawyer.name,
-              location: lawyer.location,
+              city: lawyer.location,
               description: lawyer.description,
               price: lawyer.price,
               imageUrl: lawyer.imageUrl,
@@ -60,7 +60,7 @@ class ConsultationController extends GetxController {
       selectedLawyer.value = LawyerModel(
         id: '1',
         name: 'أسم المحامي',
-        location: 'دمشق',
+        city: 'دمشق',
         description:
             'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد',
         price: 20.5,
