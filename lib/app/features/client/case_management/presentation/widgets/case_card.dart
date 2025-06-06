@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:legal_app/app/core/data/models/case.dart';
 import 'package:legal_app/app/core/theme/app_colors.dart';
 import 'package:intl/intl.dart';
+import 'package:legal_app/app/features/client/case_management/data/models/case_model.dart';
 
 class CaseCard extends StatelessWidget {
-  final Case caseItem;
+  final CaseModel caseItem;
   final VoidCallback onTap;
 
   const CaseCard({
@@ -119,7 +119,8 @@ class CaseCard extends StatelessWidget {
               ),
 
               // If assigned lawyer exists, show lawyer name
-              if (caseItem.lawyerId != null && caseItem.lawyerId!.isNotEmpty)
+              if (caseItem.assignedLawyerId != null &&
+                  caseItem.assignedLawyerId!.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Row(
@@ -131,7 +132,7 @@ class CaseCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'المحامي: ${caseItem.lawyerId}',
+                        'المحامي: ${caseItem.assignedLawyerId}',
                         style: const TextStyle(
                           fontFamily: 'Almarai',
                           fontSize: 12,

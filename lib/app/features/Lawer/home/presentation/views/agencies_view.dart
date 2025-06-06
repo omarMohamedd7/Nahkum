@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:legal_app/app/core/theme/app_colors.dart';
 import 'package:legal_app/app/core/utils/app_assets.dart';
-import 'package:legal_app/app/features/Judge/home/presentation/widgets/custom_bottom_navigation_judge_Bar.dart';
+import 'package:legal_app/app/features/Lawer/home/data/controllers/agencies_controller.dart';
+import 'package:legal_app/app/features/Lawer/home/data/models/agency_model.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/widgets/lawyer_bottom_navigation_bar.dart';
 
-class AgenciesView extends StatelessWidget {
+class AgenciesView extends GetView<AgenciesController> {
   const AgenciesView({super.key});
 
   @override
@@ -21,11 +24,11 @@ class AgenciesView extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border:
-                              Border.all(width: 1, color: Color(0xffBFBFBF))),
+                          border: Border.all(
+                              width: 1, color: const Color(0xffBFBFBF))),
                       child: SvgPicture.asset(
                         height: 20,
                         width: 20,
@@ -33,11 +36,11 @@ class AgenciesView extends StatelessWidget {
                       )),
                   const SizedBox(width: 11),
                   Container(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border:
-                              Border.all(width: 1, color: Color(0xffBFBFBF))),
+                          border: Border.all(
+                              width: 1, color: const Color(0xffBFBFBF))),
                       child: SvgPicture.asset(
                         height: 20,
                         width: 20,
@@ -45,18 +48,18 @@ class AgenciesView extends StatelessWidget {
                       )),
                   const SizedBox(width: 11),
                   Container(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border:
-                              Border.all(width: 1, color: Color(0xffBFBFBF))),
+                          border: Border.all(
+                              width: 1, color: const Color(0xffBFBFBF))),
                       child: SvgPicture.asset(
                         height: 20,
                         width: 20,
                         AppAssets.notification,
                       )),
                   const SizedBox(width: 25),
-                  Text(
+                  const Text(
                     'التوكيلات',
                     style: TextStyle(
                       fontFamily: 'Almarai',
@@ -68,26 +71,74 @@ class AgenciesView extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              const SizedBox(height: 24),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    return _buildAgencyCard();
-                  },
-                ),
-              ),
+              Obx(() {
+                if (controller.isLoading.value) {
+                  return const Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  );
+                } else if (controller.errorMessage.value != null) {
+                  return Expanded(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            controller.errorMessage.value!,
+                            style: const TextStyle(
+                              fontFamily: 'Almarai',
+                              fontSize: 16,
+                              color: Colors.red,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () => controller.fetchAgencies(),
+                            child: const Text('إعادة المحاولة'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else if (controller.agencies.isEmpty) {
+                  return const Expanded(
+                    child: Center(
+                      child: Text(
+                        'لا توجد توكيلات',
+                        style: TextStyle(
+                          fontFamily: 'Almarai',
+                          fontSize: 16,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: controller.agencies.length,
+                      itemBuilder: (context, index) {
+                        return _buildAgencyCard(controller.agencies[index]);
+                      },
+                    ),
+                  );
+                }
+              }),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavigationJudgeBar(
-        currentIndex: 2,
+      bottomNavigationBar: const LawyerBottomNavigationBar(
+        currentIndex: 3,
       ),
     );
   }
 
-  Widget _buildAgencyCard() {
+  Widget _buildAgencyCard(AgencyModel agency) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -107,9 +158,9 @@ class AgenciesView extends StatelessWidget {
                 color: AppColors.gold,
                 width: 24,
               ),
-              const Text(
-                'قضية أسرية',
-                style: TextStyle(
+              Text(
+                agency.caseType,
+                style: const TextStyle(
                   fontFamily: 'Almarai',
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
@@ -119,18 +170,18 @@ class AgenciesView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-          const Text(
-            'اسم الموكل: طارق الشعار',
-            style: TextStyle(
+          Text(
+            'اسم الموكل: ${agency.clientName}',
+            style: const TextStyle(
               fontFamily: 'Almarai',
               fontSize: 13,
               color: AppColors.textPrimary,
             ),
             textAlign: TextAlign.right,
           ),
-          const Text(
-            'رقم القضية: #2500',
-            style: TextStyle(
+          Text(
+            'رقم القضية: ${agency.caseNumber}',
+            style: const TextStyle(
               fontFamily: 'Almarai',
               fontSize: 13,
               color: AppColors.textSecondary,
@@ -138,9 +189,9 @@ class AgenciesView extends StatelessWidget {
             textAlign: TextAlign.right,
           ),
           const SizedBox(height: 8),
-          const Text(
-            'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربي حيث...',
-            style: TextStyle(
+          Text(
+            "الوصف",
+            style: const TextStyle(
               fontFamily: 'Almarai',
               fontSize: 13,
               color: AppColors.textPrimary,
@@ -150,11 +201,11 @@ class AgenciesView extends StatelessWidget {
             textAlign: TextAlign.right,
           ),
           const SizedBox(height: 8),
-          Align(
+          const Align(
             alignment: Alignment.bottomLeft,
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children: [
                 Text(
                   'تفاصيل',
                   style: TextStyle(

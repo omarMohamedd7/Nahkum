@@ -7,14 +7,29 @@ import 'package:legal_app/app/shared/widgets/custom_search_text_field.dart';
 import '../controllers/case_management_controller.dart';
 import '../widgets/case_card.dart';
 import '../widgets/case_offer_card.dart';
-import '../widgets/empty_state.dart';
 import '../../../home/presentation/widgets/bottom_navigation_bar.dart';
-import 'package:legal_app/app/core/data/models/case.dart';
+import 'package:legal_app/app/core/data/models/case_model.dart' as CoreModel;
+import '../../data/models/case_model.dart' as FeatureModel;
 import '../../data/models/case_offer.dart';
 import '../../data/models/case.dart' as DetailCase;
 
 class CaseManagementView extends GetView<CaseManagementController> {
   const CaseManagementView({Key? key}) : super(key: key);
+
+  // Convert from core CaseModel to feature CaseModel
+  FeatureModel.CaseModel _convertCaseModel(CoreModel.CaseModel coreModel) {
+    return FeatureModel.CaseModel(
+      id: coreModel.id,
+      title: coreModel.title,
+      description: coreModel.description,
+      caseNumber: coreModel.caseNumber,
+      caseType: coreModel.caseType,
+      status: coreModel.status,
+      createdAt: DateTime.now(),
+      assignedLawyerId: coreModel.assignedLawyerId,
+      attachments: coreModel.attachments,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,21 +120,23 @@ class CaseManagementView extends GetView<CaseManagementController> {
                         );
                       } else {
                         // Regular case
-                        final caseItem = item as Case;
+                        final coreCaseItem = item as CoreModel.CaseModel;
+                        final featureCaseItem = _convertCaseModel(coreCaseItem);
+
                         return CaseCard(
-                          caseItem: caseItem,
+                          caseItem: featureCaseItem,
                           onTap: () {
                             // Convert from core Case to detail Case
                             final detailCase = DetailCase.Case(
-                              id: caseItem.id,
-                              title: caseItem.title,
-                              description: caseItem.description,
-                              caseNumber: caseItem.caseNumber,
-                              caseType: caseItem.caseType,
-                              status: caseItem.status,
+                              id: coreCaseItem.id,
+                              title: coreCaseItem.title,
+                              description: coreCaseItem.description,
+                              caseNumber: coreCaseItem.caseNumber,
+                              caseType: coreCaseItem.caseType,
+                              status: coreCaseItem.status,
                               createdAt: DateTime.now(),
-                              assignedLawyerId: caseItem.lawyerId,
-                              attachments: caseItem.attachments,
+                              assignedLawyerId: coreCaseItem.assignedLawyerId,
+                              attachments: coreCaseItem.attachments,
                             );
                             Get.to(() => CaseDetailsPage(caseItem: detailCase));
                           },

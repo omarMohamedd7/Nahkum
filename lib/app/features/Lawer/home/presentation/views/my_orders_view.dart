@@ -3,8 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:legal_app/app/core/theme/app_colors.dart';
 import 'package:legal_app/app/core/utils/app_assets.dart';
-import 'package:legal_app/app/features/Judge/home/presentation/widgets/custom_bottom_navigation_judge_Bar.dart';
 import 'package:legal_app/app/features/Lawer/home/presentation/controllers/my_orders_controller.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/widgets/lawyer_bottom_navigation_bar.dart';
 
 class MyOrdersView extends StatelessWidget {
   MyOrdersView({super.key});
@@ -47,8 +47,7 @@ class MyOrdersView extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar:
-          const CustomBottomNavigationJudgeBar(currentIndex: 0),
+      bottomNavigationBar: const LawyerBottomNavigationBar(currentIndex: 4),
     );
   }
 

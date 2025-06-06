@@ -41,6 +41,7 @@ dependencies:
   equatable: ^2.0.7
   auto_size_text: ^3.0.0
   get: ^4.6.6  # Added GetX package
+  flutter_riverpod: ^2.5.1  # Added Riverpod for state management
   flutter_localizations:
     sdk: flutter
   freezed_annotation: ^3.0.0
@@ -75,6 +76,9 @@ flutter:
     - assets/images/
     - assets/images/active navbar/
     - assets/images/unactive navbar/
+    - assets/images/active lawyer bar/
+    - assets/images/unactive Lawyer bar/
+    - assets/images/lawyer home/
     
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

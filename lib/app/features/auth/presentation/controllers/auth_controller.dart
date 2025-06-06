@@ -199,7 +199,14 @@ class AuthController extends GetxController {
       // Set logged in status
       isLoggedIn.value = true;
 
-      // Navigation happens in the view
+      // Navigate based on user role
+      if (userRole.value == UserRole.client) {
+        Get.offAllNamed(Routes.HOME);
+      } else if (userRole.value == UserRole.lawyer) {
+        Get.offAllNamed(Routes.LAWYER_HOME);
+      } else if (userRole.value == UserRole.judge) {
+        Get.offAllNamed(Routes.Judge_HOME);
+      }
     } catch (e) {
       if (e is AuthFailure || e is NetworkFailure || e is ServerFailure) {
         rethrow;
@@ -228,6 +235,8 @@ class AuthController extends GetxController {
       // Navigate to home
       if (userRole.value == UserRole.client) {
         Get.offAllNamed(Routes.HOME);
+      } else if (userRole.value == UserRole.lawyer) {
+        Get.offAllNamed(Routes.LAWYER_HOME);
       } else if (userRole.value == UserRole.judge) {
         Get.offAllNamed(Routes.Judge_HOME);
       }

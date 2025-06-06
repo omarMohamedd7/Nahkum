@@ -223,6 +223,7 @@ class LoginScreen extends GetView<AuthController> {
 
     try {
       await controller.signInWithGoogle();
+      // The navigation is handled in the controller based on user role
     } catch (e) {
       if (e is AuthFailure) {
         Get.snackbar('خطأ', e.message,

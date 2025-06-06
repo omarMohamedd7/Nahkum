@@ -3,8 +3,17 @@ import 'package:legal_app/app/features/Judge/home/presentation/views/blogs_view.
 import 'package:legal_app/app/features/Judge/home/presentation/views/judge_home_view.dart';
 import 'package:legal_app/app/features/Judge/home/presentation/views/tasks_view.dart';
 import 'package:legal_app/app/features/Judge/home/presentation/views/video_analysis_view.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/bindings/clients_binding.dart';
 import 'package:legal_app/app/features/Lawer/home/presentation/views/agencies_view.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/views/home_view.dart'
+    as LawyerHomeView;
+import 'package:legal_app/app/features/Lawer/home/presentation/bindings/home_binding.dart'
+    as LawyerHomeBinding;
+import 'package:legal_app/app/features/Lawer/cases/presentation/views/my_cases_view.dart';
+import 'package:legal_app/app/features/Lawer/cases/presentation/controllers/cases_binding.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/views/clients_view.dart';
 import 'package:legal_app/app/features/auth/presentation/views/forget_password_screen.dart';
+
 import 'package:legal_app/app/features/auth/presentation/views/login_screen.dart';
 import 'package:legal_app/app/features/auth/presentation/views/otp_verification_screen.dart';
 import 'package:legal_app/app/features/auth/presentation/views/password_reset_success_screen.dart';
@@ -40,6 +49,10 @@ import '../features/client/direct_case_request/presentation/bindings/direct_case
 import '../features/client/direct_case_request/presentation/views/direct_case_request_view.dart';
 import '../features/client/publish_case/presentation/views/publish_case_view.dart';
 import '../features/shared/onboarding/presentation/views/onboarding_view.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/bindings/agencies_binding.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/views/my_orders_view.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/controllers/my_orders_controller.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/views/sessions_schedule_view.dart';
 
 class AppPages {
   static const INITIAL = Routes.ONBOARDING;
@@ -200,7 +213,7 @@ class AppPages {
       page: () => const JudgeHomeView(),
       //binding: JudgeHomeView(),
     ),
-     GetPage(
+    GetPage(
       transition: Transition.noTransition,
       name: Routes.Tasks_View,
       page: () => const TasksView(),
@@ -223,6 +236,43 @@ class AppPages {
       name: Routes.Agencies_View,
       page: () => const AgenciesView(),
       //binding: JudgeHomeView(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.LAWYER_HOME,
+      page: () => const LawyerHomeView.HomeView(),
+      binding: LawyerHomeBinding.LawyerHomeBinding(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.LAWYER_CASES,
+      page: () => const MyCasesView(),
+      binding: CasesBinding(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.LAWYER_CLIENTS,
+      page: () => const ClientsView(),
+      binding: ClientsBinding(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.LAWYER_AGENCIES,
+      page: () => const AgenciesView(),
+      binding: AgenciesBinding(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.LAWYER_ORDERS,
+      page: () => MyOrdersView(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<MyOrdersController>(() => MyOrdersController());
+      }),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.LAWYER_SESSIONS,
+      page: () => const SessionsScheduleView(),
     ),
   ];
 }

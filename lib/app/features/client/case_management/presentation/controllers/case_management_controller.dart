@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:legal_app/app/core/data/models/case.dart';
+import 'package:legal_app/app/core/data/models/case_model.dart';
 import 'package:legal_app/app/routes/app_routes.dart';
 import '../../data/models/case_offer.dart';
 
@@ -13,9 +13,9 @@ class CaseManagementController extends GetxController
   final searchController = TextEditingController();
 
   // Observable variables
-  final RxList<Case> waitingApprovalCases = <Case>[].obs;
-  final RxList<Case> approvedCases = <Case>[].obs;
-  final RxList<Case> closedCases = <Case>[].obs;
+  final RxList<CaseModel> waitingApprovalCases = <CaseModel>[].obs;
+  final RxList<CaseModel> approvedCases = <CaseModel>[].obs;
+  final RxList<CaseModel> closedCases = <CaseModel>[].obs;
   final RxList<CaseOffer> caseOffers = <CaseOffer>[].obs;
   final RxBool isLoading = false.obs;
   final RxBool isSearching = false.obs;
@@ -49,7 +49,7 @@ class CaseManagementController extends GetxController
   void fetchCases() {
     // Mock data for cases with different statuses
     waitingApprovalCases.value = [
-      Case(
+      CaseModel(
           id: '1',
           title: 'طلب استشارة قانونية حول عقد إيجار',
           description:
@@ -57,9 +57,9 @@ class CaseManagementController extends GetxController
           caseNumber: '2023-156',
           caseType: 'استشارة قانونية',
           status: 'بانتظار الموافقة',
-          lawyerId: 'محمد أحمد',
+          assignedLawyerId: 'محمد أحمد',
           attachments: []),
-      Case(
+      CaseModel(
           id: '2',
           title: 'طلب مراجعة عقد عمل',
           description:
@@ -67,24 +67,24 @@ class CaseManagementController extends GetxController
           caseNumber: '2023-157',
           caseType: 'قانون العمل',
           status: 'بانتظار الموافقة',
-          lawyerId: 'محمد أحمد',
+          assignedLawyerId: 'محمد أحمد',
           attachments: []),
     ];
 
     approvedCases.value = [
-      Case(
+      CaseModel(
           id: '3',
           title: 'دعوى مطالبة مالية',
           description: 'دعوى للمطالبة بمستحقات مالية متأخرة من شركة سابقة',
           caseNumber: '2023-120',
           caseType: 'قضايا مدنية',
           status: 'موافق عليه',
-          lawyerId: ' أحمد',
+          assignedLawyerId: ' أحمد',
           attachments: []),
     ];
 
     closedCases.value = [
-      Case(
+      CaseModel(
           id: '4',
           title: 'استشارة قانونية حول قضية إرث',
           description:
@@ -92,7 +92,7 @@ class CaseManagementController extends GetxController
           caseNumber: '2023-098',
           caseType: 'أحوال شخصية',
           status: 'مغلق',
-          lawyerId: 'خالد محمود',
+          assignedLawyerId: 'خالد محمود',
           attachments: []),
     ];
   }
@@ -189,7 +189,7 @@ class CaseManagementController extends GetxController
     Get.toNamed(Routes.PUBLISH_CASE);
   }
 
-  void navigateToCaseDetails(Case caseItem) {
+  void navigateToCaseDetails(CaseModel caseItem) {
     Get.toNamed(Routes.CASE_DETAILS, arguments: caseItem);
   }
 
@@ -214,14 +214,14 @@ class CaseManagementController extends GetxController
 
       // Add to approved cases
       approvedCases.add(
-        Case(
+        CaseModel(
           id: offer.id,
           title: offer.caseType,
           description: offer.description,
           caseNumber: offer.caseNumber,
           caseType: offer.caseType,
           status: 'موافق عليه',
-          lawyerId: offer.lawyerId,
+          assignedLawyerId: offer.lawyerId,
           attachments: [],
         ),
       );

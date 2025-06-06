@@ -29,9 +29,9 @@ class NahkumApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Almarai',
       ),
-      //initialBinding: AppBinding(),
-      //initialRoute: AppPages.INITIAL, // Normal app flow
-      home: CaseDetailsView(),
+      initialBinding: AppBinding(),
+      initialRoute: AppPages.INITIAL, // Restored to normal app flow
+      //home: CaseDetailsView(),s
       getPages: AppPages.routes,
     );
   }

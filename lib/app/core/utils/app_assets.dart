@@ -78,3 +78,38 @@ class AppAssets {
 
   // Auth images directory
 }
+
+// Add lawyer home assets
+class LawyerHomeAssets {
+  // Bottom navigation bar
+  static const String activeHomeIcon =
+      'assets/images/active lawyer bar/home-2.svg';
+  static const String activeClientsIcon =
+      'assets/images/active lawyer bar/people.svg';
+  static const String activeCasesIcon =
+      'assets/images/active lawyer bar/judge.svg';
+  static const String activePowersIcon =
+      'assets/images/active lawyer bar/archive-book.svg';
+  static const String activeRequestsIcon =
+      'assets/images/active lawyer bar/note-add.svg';
+
+  static const String inactiveHomeIcon =
+      'assets/images/unactive Lawyer bar/home-2.svg';
+  static const String inactiveClientsIcon =
+      'assets/images/unactive Lawyer bar/people.svg';
+  static const String inactiveCasesIcon =
+      'assets/images/unactive Lawyer bar/judge.svg';
+  static const String inactivePowersIcon =
+      'assets/images/unactive Lawyer bar/archive-book.svg';
+  static const String inactiveRequestsIcon =
+      'assets/images/unactive Lawyer bar/note-add.svg';
+
+  // Header icons
+  static const String notificationIcon =
+      'assets/images/lawyer home/notification.svg';
+  static const String messageIcon = 'assets/images/lawyer home/message.svg';
+  static const String settingsIcon = 'assets/images/lawyer home/setting-2.svg';
+  static const String calendarIcon = 'assets/images/lawyer home/calendar.svg';
+  static const String lawIcon =
+      'assets/images/lawyer home/noun-law-7826376 1.svg';
+}

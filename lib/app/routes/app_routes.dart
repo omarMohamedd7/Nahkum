@@ -27,4 +27,11 @@ abstract class Routes {
   static const Blogs_View = '/Blogs_View';
   static const Settings_View = '/Settings_View';
   static const Agencies_View = '/Agencies_View';
+  static const LAWYER_HOME = '/lawyer_home';
+  static const LAWYER_CASES = '/lawyer_cases';
+  static const LAWYER_CLIENTS = '/lawyer/clients';
+  static const CLIENT_DETAILS = '/lawyer/client_details';
+  static const LAWYER_AGENCIES = '/lawyer/agencies';
+  static const LAWYER_ORDERS = '/lawyer/orders';
+  static const LAWYER_SESSIONS = '/lawyer/sessions';
 }

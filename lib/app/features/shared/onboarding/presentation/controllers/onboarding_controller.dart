@@ -33,8 +33,8 @@ class OnboardingController extends GetxController {
 
   // Method to navigate directly to register screen (for testing)
   void navigateToRegister(UserRole role) {
-    print('Navigating directly to register with role: ${role.toString()}');
-    Get.toNamed(Routes.REGISTER, arguments: {'role': role});
+    print('Navigating directly to login with role: ${role.toString()}');
+    Get.toNamed(Routes.LOGIN, arguments: {'role': role});
   }
 
   // Helper method to check if screen is small
