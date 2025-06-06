@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:legal_app/app/features/Judge/home/presentation/widgets/custom_bottom_navigation_judge_Bar.dart';
+import 'package:legal_app/app/features/shared/onboarding/data/models/user_role.dart';
 import 'package:legal_app/app/features/shared/settings/presentation/controllers/settings_controller.dart';
 import 'package:legal_app/app/features/client/home/presentation/widgets/bottom_navigation_bar.dart';
 import 'package:legal_app/app/features/shared/settings/presentation/widgets/custom_toggle_switch.dart';
@@ -86,10 +88,15 @@ class SettingsView extends GetView<SettingsController> {
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        key: const ValueKey('settings_view_bottom_nav'),
-        currentIndex: 4,
-      ),
+      bottomNavigationBar: controller.userRole == UserRole.client
+          ? CustomBottomNavigationBar(
+              key: const ValueKey('settings_view_bottom_nav'),
+              currentIndex: 4,
+            )
+          : CustomBottomNavigationJudgeBar(
+              key: const ValueKey('settings_view_bottom_nav'),
+              currentIndex: 4,
+            ),
     );
   }
 }

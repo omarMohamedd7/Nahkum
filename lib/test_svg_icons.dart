@@ -40,8 +40,11 @@ class TestSvgIcons extends StatelessWidget {
                   AppAssets.unactiveMessage,
                   AppAssets.unactiveJudge,
                   AppAssets.unactiveFolderOpen,
-                  AppAssets.unactiveSetting,
-                ]),
+ padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border:
+                              Border.all(width: 1, color: Color(0xffBFBFBF))),                ]),
               ],
             ),
           ),
