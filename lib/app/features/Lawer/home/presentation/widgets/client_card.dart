@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
-import '../../data/models/client_model.dart';
+import 'package:legal_app/app/features/Lawer/home/data/models/client.dart';
+import 'package:legal_app/app/features/Lawer/home/data/models/case_item.dart';
 import '../../../../../core/theme/app_colors.dart';
 
 class ClientCard extends StatelessWidget {
-  final ClientModel client;
+  final Client client;
+  final CaseItem? caseItem;
   final VoidCallback onTap;
 
   const ClientCard({
     Key? key,
     required this.client,
+    this.caseItem,
     required this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final double fontSize = screenWidth < 360 ? 13 : 14;
+    final double smallFontSize = screenWidth < 360 ? 11 : 12;
 
     return GestureDetector(
       onTap: onTap,
@@ -40,12 +45,19 @@ class ClientCard extends StatelessWidget {
                       color: Color(0xFFEEE3CD),
                       shape: BoxShape.circle,
                     ),
-                    child: client.imageUrl != null
+                    child: client.profileImageUrl.isNotEmpty
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(24),
                             child: Image.network(
-                              client.imageUrl!,
+                              client.profileImageUrl,
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(
+                                  Icons.person,
+                                  color: AppColors.gold,
+                                  size: 24,
+                                );
+                              },
                             ),
                           )
                         : const Icon(
@@ -62,36 +74,105 @@ class ClientCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(
-                          client.name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Almarai',
-                            color: Color(0xFF181E3C),
-                          ),
-                          textAlign: TextAlign.right,
+                        // Client name
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              client.name,
+                              style: TextStyle(
+                                fontSize: fontSize,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Almarai',
+                                color: const Color(0xFF181E3C),
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                            const Text(
+                              ' :اسم الموكل',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: 'Almarai',
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF181E3C),
+                              ),
+                            ),
+                          ],
                         ),
+
                         const SizedBox(height: 8),
-                        Text(
-                          'نوع القضية: ${client.caseType}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'Almarai',
-                            color: Color(0xFF737373),
+
+                        // Case type
+                        if (caseItem != null) ...[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                caseItem!.caseType,
+                                style: TextStyle(
+                                  fontSize: smallFontSize,
+                                  fontFamily: 'Almarai',
+                                  color: const Color(0xFF181E3C),
+                                ),
+                              ),
+                              const Text(
+                                ' :نوع القضية',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Almarai',
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF181E3C),
+                                ),
+                              ),
+                            ],
                           ),
-                          textAlign: TextAlign.right,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'رقم القضية: ${client.caseNumber}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'Almarai',
-                            color: Color(0xFF737373),
+
+                          const SizedBox(height: 8),
+
+                          // Case number
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                caseItem!.caseNumber,
+                                style: TextStyle(
+                                  fontSize: smallFontSize,
+                                  fontFamily: 'Almarai',
+                                  color: const Color(0xFF181E3C),
+                                ),
+                              ),
+                              const Text(
+                                ' :رقم القضية',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Almarai',
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF181E3C),
+                                ),
+                              ),
+                            ],
                           ),
-                          textAlign: TextAlign.right,
-                        ),
+                        ] else ...[
+                          Text(
+                            'رقم الهاتف: ${client.phoneNumber}',
+                            style: TextStyle(
+                              fontSize: smallFontSize,
+                              fontFamily: 'Almarai',
+                              color: const Color(0xFF737373),
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'المدينة: ${client.city}',
+                            style: TextStyle(
+                              fontSize: smallFontSize,
+                              fontFamily: 'Almarai',
+                              color: const Color(0xFF737373),
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -101,7 +182,7 @@ class ClientCard extends StatelessWidget {
 
             // Details button
             Padding(
-              padding: const EdgeInsets.only(right: 16, bottom: 16),
+              padding: const EdgeInsets.only(right: 16, left: 16, bottom: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -115,13 +196,10 @@ class ClientCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 6),
-                  Transform.rotate(
-                    angle: 3.14, // 180 degrees in radians
-                    child: const Icon(
-                      Icons.arrow_back_ios_new,
-                      size: 14,
-                      color: Color(0xFF181E3C),
-                    ),
+                  Icon(
+                    Icons.arrow_back_ios,
+                    size: 12,
+                    color: const Color(0xFF181E3C),
                   ),
                 ],
               ),

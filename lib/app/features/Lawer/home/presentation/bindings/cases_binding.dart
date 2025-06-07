@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'cases_controller.dart';
+import '../controllers/cases_controller.dart';
 
 class CasesBinding extends Bindings {
   @override

@@ -61,6 +61,7 @@ class LawyerBottomNavigationBar extends StatelessWidget {
         onTap: () {
           if (currentIndex != 3) {
             Get.offAllNamed(Routes.LAWYER_AGENCIES);
+            print("Navigating to lawyer agencies: ${Routes.LAWYER_AGENCIES}");
           }
         },
       ),

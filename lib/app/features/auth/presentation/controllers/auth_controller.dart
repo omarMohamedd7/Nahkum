@@ -185,26 +185,56 @@ class AuthController extends GetxController {
   // Login function
   Future<void> login() async {
     if (loginFormKey.currentState?.validate() != true) {
+      print("Login validation failed");
       return;
     }
 
     if (!acceptTerms.value) {
+      print("Terms not accepted");
       return;
     }
+
+    isLoading.value = true;
+    print(
+        "Login process starting with role: ${userRole.value?.toString() ?? 'null'}");
 
     try {
       // Simulate API call
       await Future.delayed(const Duration(seconds: 1));
+      print("API call completed");
 
       // Set logged in status
       isLoggedIn.value = true;
+      print("User logged in successfully");
 
-      // Navigation happens in the view
+      // In a real app, you would navigate to OTP verification here
+      // For debugging purposes, we'll navigate directly to the home screen
+
+      // Navigate to the appropriate home screen based on user role
+      if (userRole.value == UserRole.client) {
+        print("Navigating to client home");
+        Get.offAllNamed(Routes.HOME);
+      } else if (userRole.value == UserRole.lawyer) {
+        print("Navigating to lawyer home: ${Routes.LAWYER_HOME}");
+        // Print the actual route value
+        print("Lawyer home route value: ${Routes.LAWYER_HOME}");
+        Get.offAllNamed(Routes.LAWYER_HOME);
+      } else if (userRole.value == UserRole.judge) {
+        print("Navigating to judge home");
+        Get.offAllNamed(Routes.Judge_HOME);
+      } else {
+        // Default to client home if role is not set
+        print("Role not set, defaulting to client home");
+        Get.offAllNamed(Routes.HOME);
+      }
     } catch (e) {
+      print("Login error: $e");
       if (e is AuthFailure || e is NetworkFailure || e is ServerFailure) {
         rethrow;
       }
       throw AuthFailure(message: 'فشل تسجيل الدخول');
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -225,11 +255,23 @@ class AuthController extends GetxController {
       isLoggedIn.value = true;
       showMessage('تم تسجيل الدخول بنجاح عبر حساب جوجل');
 
-      // Navigate to home
+      print(
+          "Google sign in successful with role: ${userRole.value?.toString() ?? 'null'}");
+
+      // Navigate to the appropriate home screen based on user role
       if (userRole.value == UserRole.client) {
+        print("Navigating to client home");
         Get.offAllNamed(Routes.HOME);
+      } else if (userRole.value == UserRole.lawyer) {
+        print("Navigating to lawyer home from Google sign-in");
+        Get.offAllNamed(Routes.LAWYER_HOME);
       } else if (userRole.value == UserRole.judge) {
+        print("Navigating to judge home");
         Get.offAllNamed(Routes.Judge_HOME);
+      } else {
+        // Default to client home if role is not set
+        print("Role not set, defaulting to client home");
+        Get.offAllNamed(Routes.HOME);
       }
     } catch (e) {
       if (e is AuthFailure) {

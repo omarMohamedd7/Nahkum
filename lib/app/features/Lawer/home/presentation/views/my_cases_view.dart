@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../controllers/cases_controller.dart';
-import '../widgets/custom_app_bar.dart';
-import '../../../home/presentation/widgets/lawyer_bottom_navigation_bar.dart';
-import '../../../cases/data/models/case_model.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../widgets/case_app_bar.dart';
+import '../widgets/lawyer_bottom_navigation_bar.dart';
+import '../../data/models/case_item.dart';
 
 class MyCasesView extends GetView<CasesController> {
   const MyCasesView({Key? key}) : super(key: key);
@@ -19,7 +17,7 @@ class MyCasesView extends GetView<CasesController> {
         body: SafeArea(
           child: Column(
             children: [
-              const CustomAppBar(),
+              const CaseAppBar(title: 'قضاياي'),
 
               // Tabs
               Container(
@@ -36,7 +34,7 @@ class MyCasesView extends GetView<CasesController> {
                   controller: controller.tabController,
                   indicator: BoxDecoration(
                     borderRadius: BorderRadius.circular(4),
-                    color: AppColors.goldLight,
+                    color: const Color(0xFFC8A45D),
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
                   labelColor: Colors.white,
@@ -58,8 +56,8 @@ class MyCasesView extends GetView<CasesController> {
                 child: TabBarView(
                   controller: controller.tabController,
                   children: [
-                    _buildCasesListView(controller.closedCases, controller),
-                    _buildCasesListView(controller.activeCases, controller),
+                    _buildCasesListView(controller.closedCases),
+                    _buildCasesListView(controller.activeCases),
                   ],
                 ),
               ),
@@ -71,8 +69,7 @@ class MyCasesView extends GetView<CasesController> {
     );
   }
 
-  Widget _buildCasesListView(
-      RxList<dynamic> cases, CasesController controller) {
+  Widget _buildCasesListView(RxList<CaseItem> cases) {
     return Obx(() {
       if (controller.isLoading.value) {
         return const Center(
@@ -105,20 +102,19 @@ class MyCasesView extends GetView<CasesController> {
           final caseItem = cases[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 20),
-            child: _buildCustomCaseCard(caseItem, context, controller),
+            child: _buildCaseCard(caseItem, context),
           );
         },
       );
     });
   }
 
-  Widget _buildCustomCaseCard(
-      dynamic caseItem, BuildContext context, CasesController controller) {
+  Widget _buildCaseCard(CaseItem caseItem, BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final bool isActive = caseItem.status == CaseStatus.active;
+    final bool isActive = caseItem.status == 'نشطة';
 
     return GestureDetector(
-      onTap: () => controller.navigateToCaseDetails(caseItem.id),
+      onTap: () => controller.navigateToCaseDetails(caseItem.caseId),
       child: Container(
         width: screenWidth - 48,
         decoration: BoxDecoration(
@@ -146,7 +142,7 @@ class MyCasesView extends GetView<CasesController> {
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
-                      isActive ? 'نشطة' : 'مغلقة',
+                      caseItem.status,
                       style: TextStyle(
                         color: isActive
                             ? const Color(
@@ -167,7 +163,7 @@ class MyCasesView extends GetView<CasesController> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        caseItem.title,
+                        caseItem.caseType,
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -257,7 +253,7 @@ class MyCasesView extends GetView<CasesController> {
                   ),
                   const SizedBox(width: 6),
                   Transform.rotate(
-                    angle: 3.14,
+                    angle: 3.14, // 180 degrees in radians
                     child: const Icon(
                       Icons.arrow_back_ios_new,
                       size: 14,
