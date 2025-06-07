@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:legal_app/app/core/theme/app_colors.dart';
 import 'package:legal_app/app/features/Lawer/home/data/models/attorney_request_model.dart';
 import 'package:legal_app/app/features/Lawer/home/data/models/published_case_model.dart';
-import 'package:legal_app/app/features/Lawer/home/data/models/session_model.dart';
+import 'package:legal_app/app/routes/app_routes.dart';
 
 class CaseCard extends StatelessWidget {
   final String caseType;
@@ -30,21 +31,6 @@ class CaseCard extends StatelessWidget {
     this.isPublishedCase = false,
     required this.onTap,
   }) : super(key: key);
-
-  // Constructor for session card
-  factory CaseCard.fromSessionModel(
-    LawyerSessionModel session, {
-    required VoidCallback onTap,
-  }) {
-    return CaseCard(
-      caseType: session.caseType,
-      clientName: session.clientName,
-      caseStatus: session.caseStatus,
-      caseNumber: session.caseNumber,
-      date: session.date,
-      onTap: onTap,
-    );
-  }
 
   // Constructor for attorney request card
   factory CaseCard.fromAttorneyRequestModel(
@@ -83,7 +69,13 @@ class CaseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardWidth = screenWidth * 0.55;
+    // Make card width responsive and slightly smaller to prevent overflow
+    final cardWidth =
+        screenWidth < 360 ? screenWidth * 0.68 : screenWidth * 0.53;
+    final double fontSize = screenWidth < 360 ? 12 : 14;
+    final double smallFontSize = screenWidth < 360 ? 9 : 10;
+    final double iconSize = screenWidth < 360 ? 18 : 22;
+    final double containerPadding = screenWidth < 360 ? 6 : 10;
 
     return GestureDetector(
       onTap: onTap,
@@ -98,7 +90,7 @@ class CaseCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(containerPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -114,32 +106,35 @@ class CaseCard extends StatelessWidget {
                             // Case type
                             Text(
                               caseType,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'Almarai',
-                                fontSize: 14,
+                                fontSize: fontSize,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF181E3C),
+                                color: const Color(0xFF181E3C),
                               ),
                               textAlign: TextAlign.right,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
 
-                            const SizedBox(height: 4),
+                            SizedBox(height: screenWidth < 360 ? 2 : 4),
 
                             // Client name or city
                             Text(
                               isPublishedCase
                                   ? 'المدينة: ${city ?? "غير محدد"}'
                                   : 'اسم الموكل: $clientName',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'Almarai',
-                                fontSize: 11,
-                                color: Color(0xFF181E3C),
+                                fontSize: smallFontSize,
+                                color: const Color(0xFF181E3C),
                               ),
                               textAlign: TextAlign.right,
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
 
-                            const SizedBox(height: 4),
+                            SizedBox(height: screenWidth < 360 ? 2 : 4),
 
                             // Case status
                             Row(
@@ -149,41 +144,45 @@ class CaseCard extends StatelessWidget {
                                   caseStatus,
                                   style: TextStyle(
                                     fontFamily: 'Almarai',
-                                    fontSize: 11,
+                                    fontSize: smallFontSize,
                                     fontWeight: FontWeight.bold,
                                     color: _getCaseStatusColor(caseStatus),
                                   ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                const Text(
+                                Text(
                                   ' :حالة القضية',
                                   style: TextStyle(
                                     fontFamily: 'Almarai',
-                                    fontSize: 11,
-                                    color: Color(0xFF181E3C),
+                                    fontSize: smallFontSize,
+                                    color: const Color(0xFF181E3C),
                                   ),
                                 ),
                               ],
                             ),
 
-                            const SizedBox(height: 4),
+                            SizedBox(height: screenWidth < 360 ? 2 : 4),
 
                             // Case number
                             Text(
                               'رقم القضية: $caseNumber',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'Almarai',
-                                fontSize: 11,
-                                color: Color(0xFF181E3C),
+                                fontSize: smallFontSize,
+                                color: const Color(0xFF181E3C),
                               ),
                               textAlign: TextAlign.right,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6),
                       Container(
-                        width: 38,
-                        height: 38,
+                        width: screenWidth < 360 ? 28 : 34,
+                        height: screenWidth < 360 ? 28 : 34,
                         decoration: const BoxDecoration(
                           color: Color(0xFFEEE3CD),
                           shape: BoxShape.circle,
@@ -191,8 +190,8 @@ class CaseCard extends StatelessWidget {
                         child: Center(
                           child: SvgPicture.asset(
                             'assets/images/lawyer home/noun-law-7826376 1.svg',
-                            width: 24,
-                            height: 24,
+                            width: screenWidth < 360 ? 16 : 20,
+                            height: screenWidth < 360 ? 16 : 20,
                             color: AppColors.gold,
                           ),
                         ),
@@ -200,29 +199,30 @@ class CaseCard extends StatelessWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 8),
-                  const Divider(color: Color(0xFFD8D8D8)),
+                  SizedBox(height: screenWidth < 360 ? 3 : 6),
+                  const Divider(color: Color(0xFFD8D8D8), height: 1),
+                  SizedBox(height: screenWidth < 360 ? 3 : 6),
 
                   // Description
                   if (description != null) ...[
-                    const Text(
+                    Text(
                       'جزء من وصف القضية:',
                       style: TextStyle(
                         fontFamily: 'Almarai',
-                        fontSize: 11,
+                        fontSize: smallFontSize,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF181E3C),
+                        color: const Color(0xFF181E3C),
                       ),
                       textAlign: TextAlign.right,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: screenWidth < 360 ? 2 : 3),
                     Text(
                       description!,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Almarai',
-                        fontSize: 11,
-                        color: Color(0xFF737373),
-                        height: 1.3,
+                        fontSize: smallFontSize,
+                        color: const Color(0xFF737373),
+                        height: 1.2,
                       ),
                       textAlign: TextAlign.right,
                       maxLines: 2,
@@ -230,58 +230,89 @@ class CaseCard extends StatelessWidget {
                     ),
                   ],
 
-                  const SizedBox(height: 8),
+                  SizedBox(height: screenWidth < 360 ? 3 : 6),
 
-                  // Bottom row with details and date
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Date
-                      if (date != null)
+                  // Bottom section - either date + details or submit offer button
+                  if (isPublishedCase)
+                    // Submit Offer Button (Centered)
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Navigate to submit offer page
+                          Get.toNamed(Routes.LAWYER_SUBMIT_OFFER, arguments: {
+                            'caseType': caseType,
+                            'city': city ?? '',
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.gold,
+                          foregroundColor: Colors.white,
+                          minimumSize: Size(screenWidth < 360 ? 120 : 140,
+                              screenWidth < 360 ? 32 : 36),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          'تقديم عرض',
+                          style: TextStyle(
+                            fontFamily: 'Almarai',
+                            fontSize: screenWidth < 360 ? 12 : 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    // Bottom row with details and date for attorney requests
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Date
+                        if (date != null)
+                          Row(
+                            children: [
+                              Text(
+                                date!,
+                                style: TextStyle(
+                                  fontFamily: 'Almarai',
+                                  fontSize: smallFontSize,
+                                  color: const Color(0xFF737373),
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              SvgPicture.asset(
+                                'assets/images/lawyer home/calendar.svg',
+                                width: screenWidth < 360 ? 12 : 14,
+                                height: screenWidth < 360 ? 12 : 14,
+                                color: const Color(0xFF181E3C),
+                              ),
+                            ],
+                          ),
+
+                        // Details
                         Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              date!,
-                              style: const TextStyle(
+                              'تفاصيل',
+                              style: TextStyle(
                                 fontFamily: 'Almarai',
-                                fontSize: 11,
-                                color: Color(0xFF737373),
+                                fontSize: smallFontSize,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF181E3C),
                               ),
                             ),
-                            const SizedBox(width: 4),
-                            SvgPicture.asset(
-                              'assets/images/lawyer home/calendar.svg',
-                              width: 16,
-                              height: 16,
+                            const SizedBox(width: 2),
+                            Icon(
+                              Icons.arrow_back_ios,
+                              size: screenWidth < 360 ? 10 : 12,
                               color: const Color(0xFF181E3C),
                             ),
                           ],
                         ),
-
-                      // Details
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text(
-                            'تفاصيل',
-                            style: TextStyle(
-                              fontFamily: 'Almarai',
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF181E3C),
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          SvgPicture.asset(
-                            'assets/images/arrow-right.svg',
-                            width: 16,
-                            height: 16,
-                            color: const Color(0xFF181E3C),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                 ],
               ),
             ),
@@ -292,13 +323,19 @@ class CaseCard extends StatelessWidget {
   }
 
   Color _getCaseStatusColor(String status) {
-    if (status == 'نشطة' || status == 'منشورة') {
-      return const Color(0xFF60A94D); // Green
-    } else if (status == 'بانتظار الموافقة') {
-      return const Color(0xFFE6A23C); // Orange
-    } else if (status == 'مرفوضة') {
-      return const Color(0xFFF56C6C); // Red
+    switch (status) {
+      case 'مقبولة':
+        return Colors.green;
+      case 'مرفوضة':
+        return Colors.red;
+      case 'معلقة':
+        return Colors.orange;
+      case 'منشورة':
+        return Colors.blue;
+      case 'بانتظار الموافقة':
+        return const Color(0xFFE6A23C); // Orange
+      default:
+        return const Color(0xFF181E3C);
     }
-    return const Color(0xFF181E3C); // Default dark color
   }
 }

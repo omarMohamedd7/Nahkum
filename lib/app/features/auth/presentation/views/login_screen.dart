@@ -173,11 +173,15 @@ class LoginScreen extends GetView<AuthController> {
   }
 
   void _handleLogin() async {
+    print("Login button pressed");
+
     if (controller.loginFormKey.currentState?.validate() != true) {
+      print("Login validation failed");
       return;
     }
 
     if (!controller.acceptTerms.value) {
+      print("Terms not accepted");
       Get.snackbar(
         'تنبيه',
         'يرجى الموافقة على الشروط والأحكام',
@@ -189,23 +193,21 @@ class LoginScreen extends GetView<AuthController> {
     }
 
     try {
-      controller.isLoading.value = true;
+      print(
+          "Calling controller.login() with role: ${controller.userRole.value?.toString() ?? 'null'}");
+      // Call controller login method - the controller will handle navigation
       await controller.login();
+      print("Controller login method completed");
 
-      // Navigate to OTP verification after successful login attempt
-      Get.toNamed(Routes.OTP_VERIFICATION, arguments: {
-        'email': controller.emailLoginController.text.trim(),
-        'phoneNumber': "+1234567890",
-        'purpose': OtpVerificationPurpose.login,
-      });
+      // Let the controller handle navigation based on user role
+      // Do NOT navigate to OTP or any other screen here
     } catch (e) {
+      print("Login error: $e");
       // Handle only critical errors that prevent navigation
       if (e is AuthFailure) {
         Get.snackbar('خطأ', e.message,
             backgroundColor: Colors.red, colorText: Colors.white);
       }
-    } finally {
-      controller.isLoading.value = false;
     }
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../cases/data/models/case_model.dart';
+import '../../data/models/case_item.dart';
 import '../../../../../routes/app_routes.dart';
 
 class CasesController extends GetxController
@@ -9,8 +9,8 @@ class CasesController extends GetxController
   late TabController tabController;
 
   // Reactive variables for UI state
-  final RxList<CaseModel> activeCases = <CaseModel>[].obs;
-  final RxList<CaseModel> closedCases = <CaseModel>[].obs;
+  final RxList<CaseItem> activeCases = <CaseItem>[].obs;
+  final RxList<CaseItem> closedCases = <CaseItem>[].obs;
   final RxBool isLoading = false.obs;
   final RxBool hasError = false.obs;
   final RxString errorMessage = ''.obs;
@@ -43,48 +43,53 @@ class CasesController extends GetxController
 
       // Mock data - would be replaced with actual API call
       final mockActiveCases = [
-        CaseModel(
-          id: '1',
-          title: 'قضية أسرية',
+        CaseItem(
+          caseId: 1,
+          caseType: 'قضية أسرية',
           clientName: 'طارق الشعار',
           caseNumber: '#2500',
+          status: 'نشطة',
           description:
               'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث...',
-          status: CaseStatus.active,
-          createdAt: DateTime.now().subtract(const Duration(days: 30)),
         ),
-        CaseModel(
-          id: '2',
-          title: 'قضية أسرية',
-          clientName: 'طارق الشعار',
-          caseNumber: '#2500',
+        CaseItem(
+          caseId: 2,
+          caseType: 'قضية تجارية',
+          clientName: 'عبدالله محمد',
+          caseNumber: '#2501',
+          status: 'نشطة',
           description:
               'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث...',
-          status: CaseStatus.active,
-          createdAt: DateTime.now().subtract(const Duration(days: 15)),
         ),
-        CaseModel(
-          id: '3',
-          title: 'قضية أسرية',
-          clientName: 'طارق الشعار',
-          caseNumber: '#2500',
+        CaseItem(
+          caseId: 3,
+          caseType: 'قضية جنائية',
+          clientName: 'محمد علي',
+          caseNumber: '#2502',
+          status: 'نشطة',
           description:
               'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث...',
-          status: CaseStatus.active,
-          createdAt: DateTime.now().subtract(const Duration(days: 5)),
         ),
       ];
 
       final mockClosedCases = [
-        CaseModel(
-          id: '4',
-          title: 'قضية أسرية',
+        CaseItem(
+          caseId: 4,
+          caseType: 'قضية أسرية',
           clientName: 'محمد العلي',
           caseNumber: '#2345',
+          status: 'مغلقة',
           description:
               'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث...',
-          status: CaseStatus.closed,
-          createdAt: DateTime.now().subtract(const Duration(days: 60)),
+        ),
+        CaseItem(
+          caseId: 5,
+          caseType: 'قضية إدارية',
+          clientName: 'سارة احمد',
+          caseNumber: '#2346',
+          status: 'مغلقة',
+          description:
+              'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث...',
         ),
       ];
 
@@ -99,7 +104,7 @@ class CasesController extends GetxController
   }
 
   // Navigate to case details
-  void navigateToCaseDetails(String caseId) {
+  void navigateToCaseDetails(int caseId) {
     // Use a proper case details route with arguments
     Get.toNamed(Routes.CASE_DETAILS, arguments: {
       'caseId': caseId,

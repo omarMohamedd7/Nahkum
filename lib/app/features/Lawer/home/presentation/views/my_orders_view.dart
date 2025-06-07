@@ -3,12 +3,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:legal_app/app/core/theme/app_colors.dart';
 import 'package:legal_app/app/core/utils/app_assets.dart';
-import 'package:legal_app/app/features/Judge/home/presentation/widgets/custom_bottom_navigation_judge_Bar.dart';
-import 'package:legal_app/app/features/Lawer/home/presentation/controllers/my_orders_controller.dart';
+import '../widgets/lawyer_bottom_navigation_bar.dart';
+import '../controllers/my_orders_controller.dart';
+import '../../data/models/order_model.dart';
 
-class MyOrdersView extends StatelessWidget {
-  MyOrdersView({super.key});
-  final controller = Get.put(MyOrdersController());
+class MyOrdersView extends GetView<MyOrdersController> {
+  const MyOrdersView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +34,45 @@ class MyOrdersView extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Obx(() {
-                  return ListView(
-                    children: [
-                      controller.selectedIndex.value == 0
-                          ? _buildRequestCard()
-                          : _buildRequestCard(title: 'قضية استشارية'),
-                    ],
+                  if (controller.isLoading.value) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: AppColors.gold),
+                    );
+                  }
+
+                  if (controller.hasError.value) {
+                    return Center(
+                      child: Text(
+                        controller.errorMessage.value,
+                        style: const TextStyle(
+                            color: Colors.red, fontFamily: 'Almarai'),
+                      ),
+                    );
+                  }
+
+                  final orders = controller.selectedIndex.value == 0
+                      ? controller.caseRequests
+                      : controller.consultationRequests;
+
+                  if (orders.isEmpty) {
+                    return Center(
+                      child: Text(
+                        controller.selectedIndex.value == 0
+                            ? 'لا توجد طلبات توكيل'
+                            : 'لا توجد طلبات استشارة',
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontFamily: 'Almarai',
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: orders.length,
+                    itemBuilder: (context, index) {
+                      return _buildRequestCard(orders[index]);
+                    },
                   );
                 }),
               ),
@@ -47,8 +80,7 @@ class MyOrdersView extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar:
-          const CustomBottomNavigationJudgeBar(currentIndex: 0),
+      bottomNavigationBar: const LawyerBottomNavigationBar(currentIndex: 4),
     );
   }
 
@@ -154,7 +186,7 @@ class MyOrdersView extends StatelessWidget {
     });
   }
 
-  Widget _buildRequestCard({String title = 'قضية أسرية'}) {
+  Widget _buildRequestCard(OrderModel order) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -169,10 +201,25 @@ class MyOrdersView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SvgPicture.asset(AppAssets.document,
-                  color: AppColors.gold, width: 20),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  color: _getStatusColor(order.status).withOpacity(0.1),
+                ),
+                child: Text(
+                  order.getLocalizedStatus(),
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: _getStatusColor(order.status),
+                  ),
+                ),
+              ),
               Text(
-                title,
+                order.caseData.caseType,
                 style: const TextStyle(
                   fontFamily: 'Almarai',
                   fontWeight: FontWeight.bold,
@@ -183,9 +230,9 @@ class MyOrdersView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          const Text(
-            'اسم الموكل: طارق الشعار',
-            style: TextStyle(
+          Text(
+            'اسم الموكل: ${order.clientData.name}',
+            style: const TextStyle(
               fontFamily: 'Almarai',
               fontSize: 12,
               color: AppColors.textPrimary,
@@ -193,9 +240,19 @@ class MyOrdersView extends StatelessWidget {
             textAlign: TextAlign.right,
           ),
           const SizedBox(height: 4),
-          const Text(
-            'رقم القضية: #2500',
-            style: TextStyle(
+          Text(
+            'رقم القضية: ${order.caseData.caseNumber}',
+            style: const TextStyle(
+              fontFamily: 'Almarai',
+              fontSize: 12,
+              color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.right,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'تاريخ الطلب: ${order.getFormattedDate()}',
+            style: const TextStyle(
               fontFamily: 'Almarai',
               fontSize: 12,
               color: AppColors.textSecondary,
@@ -203,9 +260,9 @@ class MyOrdersView extends StatelessWidget {
             textAlign: TextAlign.right,
           ),
           const SizedBox(height: 8),
-          const Text(
-            'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة لقد تم توليد هذا النص من مولد النص العربي حيث...',
-            style: TextStyle(
+          Text(
+            order.caseData.description,
+            style: const TextStyle(
               fontFamily: 'Almarai',
               fontSize: 13,
               color: AppColors.textPrimary,
@@ -215,23 +272,39 @@ class MyOrdersView extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 12),
-          Row(
-            children: const [
-              Icon(Icons.arrow_back_ios, size: 16, color: AppColors.primary),
-              SizedBox(width: 4),
-              Text(
-                'تفاصيل',
-                style: TextStyle(
-                  fontFamily: 'Almarai',
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
+          GestureDetector(
+            onTap: () => controller.navigateToOrderDetails(order.requestId),
+            child: Row(
+              children: const [
+                Icon(Icons.arrow_back_ios, size: 16, color: AppColors.primary),
+                SizedBox(width: 4),
+                Text(
+                  'تفاصيل',
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
     );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'accepted':
+        return Colors.green;
+      case 'pending':
+        return Colors.orange;
+      case 'rejected':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
   }
 }

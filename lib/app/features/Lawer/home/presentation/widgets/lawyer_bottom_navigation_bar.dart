@@ -24,6 +24,8 @@ class LawyerBottomNavigationBar extends StatelessWidget {
         index: 0,
         onTap: () {
           if (currentIndex != 0) {
+            print("Navigating to Lawyer Home");
+            // Ensure we're using the lawyer home, not the client home
             Get.offAllNamed(Routes.LAWYER_HOME);
           }
         },
@@ -36,6 +38,7 @@ class LawyerBottomNavigationBar extends StatelessWidget {
         index: 1,
         onTap: () {
           if (currentIndex != 1) {
+            print("Navigating to Lawyer Clients");
             Get.offAllNamed(Routes.LAWYER_CLIENTS);
           }
         },
@@ -48,6 +51,7 @@ class LawyerBottomNavigationBar extends StatelessWidget {
         index: 2,
         onTap: () {
           if (currentIndex != 2) {
+            print("Navigating to Lawyer Cases");
             Get.offAllNamed(Routes.LAWYER_CASES);
           }
         },
@@ -60,7 +64,11 @@ class LawyerBottomNavigationBar extends StatelessWidget {
         index: 3,
         onTap: () {
           if (currentIndex != 3) {
+            print(
+                "Navigating to Lawyer Agencies, route: ${Routes.LAWYER_AGENCIES}");
+            // Use the lawyer-specific agencies route, not the judge one
             Get.offAllNamed(Routes.LAWYER_AGENCIES);
+            print("Navigating to lawyer agencies: ${Routes.LAWYER_AGENCIES}");
           }
         },
       ),
@@ -72,6 +80,7 @@ class LawyerBottomNavigationBar extends StatelessWidget {
         index: 4,
         onTap: () {
           if (currentIndex != 4) {
+            print("Navigating to Lawyer Orders");
             Get.offAllNamed(Routes.LAWYER_ORDERS);
           }
         },

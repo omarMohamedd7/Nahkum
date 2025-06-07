@@ -4,6 +4,14 @@ import 'package:legal_app/app/features/Judge/home/presentation/views/judge_home_
 import 'package:legal_app/app/features/Judge/home/presentation/views/tasks_view.dart';
 import 'package:legal_app/app/features/Judge/home/presentation/views/video_analysis_view.dart';
 import 'package:legal_app/app/features/Lawer/home/presentation/views/agencies_view.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/views/my_cases_view.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/views/home_view.dart'
+    as LawyerHome;
+import 'package:legal_app/app/features/Lawer/home/presentation/views/clients_view.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/views/my_orders_view.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/bindings/cases_binding.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/bindings/my_orders_binding.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/bindings/lawyer_home_binding.dart';
 import 'package:legal_app/app/features/auth/presentation/views/forget_password_screen.dart';
 import 'package:legal_app/app/features/auth/presentation/views/login_screen.dart';
 import 'package:legal_app/app/features/auth/presentation/views/otp_verification_screen.dart';
@@ -25,6 +33,8 @@ import 'package:legal_app/app/features/shared/onboarding/presentation/bindings/o
 import 'package:legal_app/app/features/shared/onboarding/presentation/views/role_test_page.dart';
 import 'package:legal_app/app/features/shared/profile/presentation/bindings/profile_binding.dart';
 import 'package:legal_app/app/features/shared/settings/presentation/bindings/settings_binding.dart';
+import 'package:legal_app/app/features/splash/presentation/bindings/splash_binding.dart';
+import 'package:legal_app/app/features/splash/presentation/views/splash_view.dart';
 import 'app_routes.dart';
 import '../features/client/home/presentation/bindings/home_binding.dart';
 import '../features/client/home/presentation/views/home_view.dart';
@@ -40,11 +50,21 @@ import '../features/client/direct_case_request/presentation/bindings/direct_case
 import '../features/client/direct_case_request/presentation/views/direct_case_request_view.dart';
 import '../features/client/publish_case/presentation/views/publish_case_view.dart';
 import '../features/shared/onboarding/presentation/views/onboarding_view.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/bindings/clients_binding.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/bindings/agencies_binding.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/bindings/submit_offer_binding.dart';
+import 'package:legal_app/app/features/Lawer/home/presentation/views/submit_offer_view.dart';
 
 class AppPages {
-  static const INITIAL = Routes.ONBOARDING;
+  static const INITIAL = Routes.SPLASH;
 
   static final routes = [
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.SPLASH,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
+    ),
     GetPage(
       transition: Transition.noTransition,
       name: Routes.HOME,
@@ -196,11 +216,47 @@ class AppPages {
     ),
     GetPage(
       transition: Transition.noTransition,
+      name: Routes.LAWYER_HOME,
+      page: () => const LawyerHome.HomeView(),
+      binding: LawyerHomeBinding(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.LAWYER_CLIENTS,
+      page: () => const ClientsView(),
+      binding: ClientsBinding(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.LAWYER_CASES,
+      page: () => const MyCasesView(),
+      binding: CasesBinding(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.LAWYER_AGENCIES,
+      page: () => const AgenciesView(),
+      binding: AgenciesBinding(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.LAWYER_ORDERS,
+      page: () => const MyOrdersView(),
+      binding: MyOrdersBinding(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
+      name: Routes.LAWYER_SUBMIT_OFFER,
+      page: () => const SubmitOfferView(),
+      binding: SubmitOfferBinding(),
+    ),
+    GetPage(
+      transition: Transition.noTransition,
       name: Routes.Judge_HOME,
       page: () => const JudgeHomeView(),
       //binding: JudgeHomeView(),
     ),
-     GetPage(
+    GetPage(
       transition: Transition.noTransition,
       name: Routes.Tasks_View,
       page: () => const TasksView(),
@@ -222,7 +278,7 @@ class AppPages {
       transition: Transition.noTransition,
       name: Routes.Agencies_View,
       page: () => const AgenciesView(),
-      //binding: JudgeHomeView(),
+      binding: AgenciesBinding(),
     ),
   ];
 }

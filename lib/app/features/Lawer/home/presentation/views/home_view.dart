@@ -33,8 +33,6 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     _buildWelcomeSection(context),
                     SizedBox(height: screenWidth * 0.06),
-                    _buildSessionsScheduleSection(context),
-                    SizedBox(height: screenWidth * 0.06),
                     _buildPowerOfAttorneyRequestsSection(context),
                     SizedBox(height: screenWidth * 0.06),
                     _buildPublishedCasesSection(context),
@@ -220,75 +218,6 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget _buildSessionsScheduleSection(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final double titleFontSize = screenWidth < 360 ? 14 : 15;
-    final double cardHeight = screenWidth < 360 ? 170 : 180;
-
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            GestureDetector(
-              onTap: () => controller.navigateToAllSessions(),
-              child: Text(
-                'عرض الكل',
-                style: TextStyle(
-                  fontFamily: 'Almarai',
-                  fontSize: titleFontSize,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.gold,
-                ),
-              ),
-            ),
-            Text(
-              'جدول الجلسات',
-              style: TextStyle(
-                fontFamily: 'Almarai',
-                fontSize: titleFontSize,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF181E3C),
-              ),
-              textAlign: TextAlign.right,
-            ),
-          ],
-        ),
-        SizedBox(height: screenWidth * 0.03),
-        SizedBox(
-          height: cardHeight,
-          child: Obx(() {
-            if (controller.isLoading.value) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (controller.sessions.isEmpty) {
-              return const Center(child: Text('لا يوجد جلسات مجدولة حالياً'));
-            }
-
-            return ListView.builder(
-              scrollDirection: Axis.horizontal,
-              reverse: true,
-              itemCount: controller.sessions.length,
-              itemBuilder: (context, index) {
-                final session = controller.sessions[index];
-                return Padding(
-                  padding: EdgeInsets.only(
-                    left: index == 0 ? 0 : screenWidth * 0.04,
-                  ),
-                  child: CaseCard.fromSessionModel(
-                    session,
-                    onTap: () => controller.navigateToSessionDetails(session),
-                  ),
-                );
-              },
-            );
-          }),
-        ),
-      ],
-    );
-  }
-
   Widget _buildPowerOfAttorneyRequestsSection(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final double titleFontSize = screenWidth < 360 ? 14 : 15;
@@ -347,11 +276,13 @@ class HomeView extends GetView<HomeController> {
           scrollDirection: Axis.horizontal,
           reverse: true,
           itemCount: controller.attorneyRequests.length,
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
           itemBuilder: (context, index) {
             final request = controller.attorneyRequests[index];
             return Padding(
               padding: EdgeInsets.only(
-                left: index == 0 ? 0 : screenWidth * 0.04,
+                left: index == controller.attorneyRequests.length - 1 ? 0 : 8,
+                right: index == 0 ? 0 : 8,
               ),
               child: CaseCard.fromAttorneyRequestModel(
                 request,
@@ -423,12 +354,14 @@ class HomeView extends GetView<HomeController> {
         return ListView.builder(
           scrollDirection: Axis.horizontal,
           reverse: true,
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
           itemCount: controller.publishedCases.length,
           itemBuilder: (context, index) {
             final caseData = controller.publishedCases[index];
             return Padding(
               padding: EdgeInsets.only(
-                left: index == 0 ? 0 : screenWidth * 0.04,
+                left: index == controller.publishedCases.length - 1 ? 0 : 8,
+                right: index == 0 ? 0 : 8,
               ),
               child: CaseCard.fromPublishedCaseModel(
                 caseData,

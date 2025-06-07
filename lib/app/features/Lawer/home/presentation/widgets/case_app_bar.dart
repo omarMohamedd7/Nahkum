@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CustomAppBar extends StatelessWidget {
-  const CustomAppBar({Key? key}) : super(key: key);
+class CaseAppBar extends StatelessWidget {
+  final String title;
+
+  const CaseAppBar({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +17,9 @@ class CustomAppBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Page title
-          const Text(
-            'قضاياي',
-            style: TextStyle(
+          Text(
+            title,
+            style: const TextStyle(
               color: Color(0xFF000000),
               fontSize: 20,
               fontWeight: FontWeight.bold,

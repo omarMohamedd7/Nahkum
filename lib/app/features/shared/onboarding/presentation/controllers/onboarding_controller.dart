@@ -16,8 +16,25 @@ class OnboardingController extends GetxController {
   // Method to navigate to login
   void navigateToLogin() {
     if (selectedRole.value != null) {
-      print('Navigating to login with role: ${selectedRole.value.toString()}');
-      Get.toNamed(Routes.LOGIN, arguments: {'role': selectedRole.value});
+      final role = selectedRole.value;
+      print('Navigating to login with role: ${role.toString()}');
+      print('Role value: ${role?.index}, Role name: ${role?.name}');
+
+      Get.toNamed(Routes.LOGIN, arguments: {'role': role});
+
+      // Print the arguments that were passed
+      final args = Get.arguments as Map?;
+      if (args != null) {
+        print('Arguments passed to login: $args');
+        if (args.containsKey('role')) {
+          final passedRole = args['role'] as UserRole?;
+          print('Role passed to login: ${passedRole?.toString() ?? "null"}');
+        } else {
+          print('Role not found in arguments');
+        }
+      } else {
+        print('No arguments passed to login');
+      }
     } else {
       print('No role selected, cannot navigate to login');
       // Show a snackbar or alert to inform the user to select a role
