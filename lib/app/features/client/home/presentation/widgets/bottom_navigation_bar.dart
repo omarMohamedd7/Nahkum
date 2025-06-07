@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:legal_app/app/core/theme/app_colors.dart';
 import 'package:legal_app/app/core/utils/app_assets.dart';
-import 'package:legal_app/app/features/shared/onboarding/data/models/user_role.dart';
 import 'package:legal_app/app/routes/app_routes.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
@@ -76,9 +75,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         index: 4,
         onTap: () {
           if (currentIndex != 4) {
-            Get.offAllNamed(Routes.SETTINGS,
-              arguments: {'userRole': UserRole.client},
-            );
+            Get.offAllNamed(Routes.SETTINGS);
           }
         },
       ),

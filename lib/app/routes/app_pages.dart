@@ -96,7 +96,6 @@ class AppPages {
         final args = Get.arguments ?? {};
         return OtpVerificationScreen(
           email: args['email'] ?? '',
-          phoneNumber: args['phoneNumber'] ?? '',
           purpose: args['purpose'] ?? OtpVerificationPurpose.login,
         );
       },
@@ -254,31 +253,26 @@ class AppPages {
       transition: Transition.noTransition,
       name: Routes.Judge_HOME,
       page: () => const JudgeHomeView(),
-      //binding: JudgeHomeView(),
     ),
     GetPage(
       transition: Transition.noTransition,
       name: Routes.Tasks_View,
       page: () => const TasksView(),
-      //binding: JudgeHomeView(),
     ),
     GetPage(
       transition: Transition.noTransition,
       name: Routes.Video_Analysis_View,
       page: () => const VideoAnalysisView(),
-      //binding: JudgeHomeView(),
     ),
     GetPage(
       transition: Transition.noTransition,
       name: Routes.Blogs_View,
       page: () => const BlogsView(),
-      //binding: JudgeHomeView(),
     ),
     GetPage(
       transition: Transition.noTransition,
       name: Routes.Agencies_View,
       page: () => const AgenciesView(),
-      //binding: JudgeHomeView(),
     ),
   ];
 }

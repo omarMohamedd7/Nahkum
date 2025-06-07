@@ -150,45 +150,46 @@ class RegisterScreen extends GetView<AuthController> {
     return Column(
       children: [
         Obx(() => GestureDetector(
-              onTap: controller.showImageSourceDialog,
-              child: Container(
-                width: width,
-                height: 86,
-                decoration: BoxDecoration(
-                  color: AppColors.goldLight.withOpacity(0.1),
-                  borderRadius: AppStyles.radiusMedium,
-                  border: Border.all(
-                    color: AppColors.textSecondary,
-                    width: 1,
-                  ),
-                  image: controller.selectedImage.value != null
-                      ? DecorationImage(
-                          image: FileImage(controller.selectedImage.value!),
-                          fit: BoxFit.cover,
-                        )
-                      : null,
-                ),
-                child: controller.selectedImage.value == null
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            'assets/images/gallery.svg',
-                            height: 24,
-                            width: 24,
-                            color: AppColors.primary,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'أضف صورتك الشخصية',
-                            style: AppStyles.bodySmall,
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      )
-                    : null,
+          onTap: controller.showImageSourceDialog,
+          child: Container(
+            width: width,
+            height: 86,
+            decoration: BoxDecoration(
+              color: AppColors.goldLight.withOpacity(0.1),
+              borderRadius: AppStyles.radiusMedium,
+              border: Border.all(
+                color: AppColors.textSecondary,
+                width: 1,
               ),
-            )),
+              image: controller.selectedImage.value != null
+                  ? DecorationImage(
+                image: FileImage(controller.selectedImage.value!),
+                fit: BoxFit.cover,
+              )
+                  : null,
+            ),
+            child: controller.selectedImage.value == null
+                ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/images/gallery.svg',
+                  height: 24,
+                  width: 24,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'أضف صورتك الشخصية',
+                  style: AppStyles.bodySmall,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            )
+                : null,
+          ),
+        )),
+
         Obx(() {
           if (controller.selectedImage.value != null) {
             return Padding(

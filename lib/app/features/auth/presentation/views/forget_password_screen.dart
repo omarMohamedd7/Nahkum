@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:legal_app/app/shared/widgets/custom_button.dart';
 import 'package:legal_app/app/routes/app_routes.dart';
 import 'package:legal_app/app/core/utils/app_assets.dart';
 import 'package:legal_app/app/core/theme/app_colors.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:legal_app/app/core/utils/form_validator.dart';
 import 'package:legal_app/app/shared/widgets/custom_text_field.dart';
-import 'otp_verification_screen.dart';
+import 'package:legal_app/app/core/data/services/dio_client.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -27,61 +27,39 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     super.dispose();
   }
 
-  // Method to handle password reset request
-  void _handleResetPassword() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      setState(() {
-        _isLoading = true;
-      });
+  Future<void> _sendResetCode() async {
+    if (!_formKey.currentState!.validate()) return;
 
-      try {
-        // Simulate API call with delay
-        await Future.delayed(const Duration(seconds: 2));
+    final email = _emailController.text.trim();
 
-        // Here you would call your actual password reset service
-        final email = _emailController.text.trim();
+    setState(() => _isLoading = true);
 
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('تم إرسال رمز التحقق إلى بريدك الإلكتروني'),
-              backgroundColor: AppColors.success,
-            ),
-          );
+    try {
+      await DioClient().requestPasswordReset(email);
 
-          // Navigate to OTP verification screen after sending the reset code
-          // Include the purpose parameter to ensure correct navigation flow
-          Get.toNamed(
-            Routes.OTP_VERIFICATION,
-            arguments: {
-              'email': email,
-              'phoneNumber': '',
-              'purpose': OtpVerificationPurpose.resetPassword,
-            },
-          );
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('فشل إرسال رابط إعادة التعيين: $e'),
-              backgroundColor: AppColors.error,
-            ),
-          );
-        }
-      } finally {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني'),
+          backgroundColor: AppColors.success,
+        ),
+      );
+
+      // الانتقال مباشرة إلى صفحة إعادة تعيين كلمة المرور
+      Get.toNamed(Routes.RESET_PASSWORD, arguments: {'email': email});
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('فشل إرسال رابط إعادة التعيين: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Get screen size for responsive layout
     final Size screenSize = MediaQuery.of(context).size;
     final bool isSmallScreen = screenSize.width < 600;
 
@@ -91,10 +69,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: SvgPicture.asset(
-              AppAssets.arrowRight,
-              color: AppColors.primary,
-            ),
+            icon: SvgPicture.asset(AppAssets.arrowRight, color: AppColors.primary),
             onPressed: () => Get.back(),
           ),
         ],
@@ -120,57 +95,41 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Header section
-                      Container(
-                        width: double.infinity,
-                        child: Text(
-                          'هل نسيت كلمة المرور؟',
-                          style: TextStyle(
-                            fontFamily: 'Almarai',
-                            fontSize: isSmallScreen ? 24 : 30,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
-                          textAlign: TextAlign.right,
+                      Text(
+                        'هل نسيت كلمة المرور؟',
+                        style: TextStyle(
+                          fontFamily: 'Almarai',
+                          fontSize: isSmallScreen ? 24 : 30,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 12),
-                      Container(
-                        width: double.infinity,
-                        child: Text(
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          'يرجى إدخال بريدك الإلكتروني لاستعادة كلمة المرور',
-                          style: TextStyle(
-                            fontFamily: 'Almarai',
-                            fontSize: 16,
-                            color: AppColors.textSecondary,
-                            letterSpacing: -0.5,
-                          ),
-                          textAlign: TextAlign.right,
+                      Text(
+                        'يرجى إدخال بريدك الإلكتروني لإرسال رابط إعادة تعيين كلمة المرور',
+                        style: TextStyle(
+                          fontFamily: 'Almarai',
+                          fontSize: 16,
+                          color: AppColors.textSecondary,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 48),
-
-                      // Email field
                       CustomTextField(
-                        hintText: 'أدخل بريد الكتروني فعال',
-                        labelText: 'البريد الألكتروني',
+                        hintText: 'أدخل بريدك الإلكتروني',
+                        labelText: 'البريد الإلكتروني',
                         iconPath: AppAssets.emailIcon,
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         validator: FormValidators.validateEmail,
                       ),
                       const SizedBox(height: 32),
-
-                      // Submit button
                       SizedBox(
-                        width: isSmallScreen
-                            ? double.infinity
-                            : screenSize.width * 0.5,
+                        width: isSmallScreen ? double.infinity : screenSize.width * 0.5,
                         child: CustomButton(
                           text: 'إرسال',
-                          onTap: _handleResetPassword,
+                          onTap: _sendResetCode,
                           isLoading: _isLoading,
                           backgroundColor: AppColors.primary,
                           textColor: AppColors.white,

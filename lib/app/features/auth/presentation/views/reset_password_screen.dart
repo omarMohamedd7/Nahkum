@@ -9,16 +9,11 @@ import 'package:legal_app/app/shared/widgets/custom_text_field.dart';
 import '../controllers/auth_controller.dart';
 
 class ResetPasswordScreen extends GetView<AuthController> {
-  final String email;
-
-  const ResetPasswordScreen({
-    super.key,
-    required this.email,
-  });
+  const ResetPasswordScreen({super.key, required email});
 
   @override
   Widget build(BuildContext context) {
-    // Get screen size for responsive layout
+    final String email = Get.arguments['email'] ?? '';
     final Size screenSize = MediaQuery.of(context).size;
     final bool isSmallScreen = screenSize.width < 600;
 
@@ -57,32 +52,25 @@ class ResetPasswordScreen extends GetView<AuthController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Header section
-                      Container(
-                        width: double.infinity,
-                        child: Text(
-                          'إعادة تعيين كلمة المرور',
-                          style: TextStyle(
-                            fontFamily: 'Almarai',
-                            fontSize: isSmallScreen ? 24 : 30,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
-                          textAlign: TextAlign.right,
+                      Text(
+                        'إعادة تعيين كلمة المرور',
+                        style: TextStyle(
+                          fontFamily: 'Almarai',
+                          fontSize: isSmallScreen ? 24 : 30,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
                         ),
+                        textAlign: TextAlign.right,
                       ),
                       const SizedBox(height: 12),
-                      Container(
-                        width: double.infinity,
-                        child: Text(
-                          'أدخل كلمة المرور الجديدة',
-                          style: TextStyle(
-                            fontFamily: 'Almarai',
-                            fontSize: isSmallScreen ? 16 : 18,
-                            color: AppColors.textSecondary,
-                          ),
-                          textAlign: TextAlign.right,
+                      Text(
+                        'أدخل كلمة المرور الجديدة',
+                        style: TextStyle(
+                          fontFamily: 'Almarai',
+                          fontSize: isSmallScreen ? 16 : 18,
+                          color: AppColors.textSecondary,
                         ),
+                        textAlign: TextAlign.right,
                       ),
                       const SizedBox(height: 40),
 
@@ -95,7 +83,6 @@ class ResetPasswordScreen extends GetView<AuthController> {
                         isPassword: true,
                         validator: FormValidators.validateStrongPassword,
                       ),
-
                       const SizedBox(height: 16),
 
                       // Confirm password field
@@ -109,7 +96,6 @@ class ResetPasswordScreen extends GetView<AuthController> {
                             FormValidators.validateConfirmPassword(
                                 value, controller.newPasswordController.text),
                       ),
-
                       const SizedBox(height: 32),
 
                       // Submit button
@@ -118,12 +104,12 @@ class ResetPasswordScreen extends GetView<AuthController> {
                             ? double.infinity
                             : screenSize.width * 0.5,
                         child: Obx(() => CustomButton(
-                              text: 'حفظ',
-                              onTap: () => _handleResetPassword(email),
-                              isLoading: controller.isLoading.value,
-                              backgroundColor: AppColors.primary,
-                              textColor: AppColors.white,
-                            )),
+                          text: 'حفظ',
+                          onTap: () => _handleResetPassword(email),
+                          isLoading: controller.isLoading.value,
+                          backgroundColor: AppColors.primary,
+                          textColor: AppColors.white,
+                        )),
                       ),
                     ],
                   ),
@@ -142,8 +128,7 @@ class ResetPasswordScreen extends GetView<AuthController> {
         await controller.resetPassword(
             email, controller.newPasswordController.text);
         controller.showMessage('تم إعادة تعيين كلمة المرور بنجاح');
-        // Navigate to success screen
-        Get.offAllNamed(Routes.PASSWORD_RESET_SUCCESS);
+        Get.offAllNamed(Routes.LOGIN); // ✅ توجيه مباشر لتسجيل الدخول
       } catch (e) {
         controller.showMessage('فشل إعادة تعيين كلمة المرور', isError: true);
       }

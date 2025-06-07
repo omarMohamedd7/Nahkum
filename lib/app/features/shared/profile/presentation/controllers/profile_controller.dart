@@ -2,62 +2,29 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
-class UserProfile {
-  final String name;
-  final String email;
-  final String? imageUrl;
-
-  UserProfile({
-    required this.name,
-    required this.email,
-    this.imageUrl,
-  });
-
-  UserProfile copyWith({
-    String? name,
-    String? email,
-    String? imageUrl,
-  }) {
-    return UserProfile(
-      name: name ?? this.name,
-      email: email ?? this.email,
-      imageUrl: imageUrl ?? this.imageUrl,
-    );
-  }
-}
+import 'package:legal_app/app/features/auth/presentation/controllers/auth_controller.dart';
 
 class ProfileController extends GetxController {
-  // Image picker instance
   final ImagePicker _picker = ImagePicker();
   final Rx<File?> selectedImage = Rx<File?>(null);
   final isLoading = false.obs;
 
-  // Observable variables with .obs suffix
-  final _userProfile = UserProfile(
-    name: 'أسم المستخدم',
-    email: 'username1234@gmail.com',
-    imageUrl: null,
-  ).obs;
+  late final AuthController _authController;
 
-  // Getters to access the reactive state
-  UserProfile get userProfile => _userProfile.value;
-  String get name => _userProfile.value.name;
-  String get email => _userProfile.value.email;
-  String? get imageUrl => _userProfile.value.imageUrl;
+  String get name => _authController.currentUser.value?.name ?? 'غير معروف';
+  String get email => _authController.currentUser.value?.email ?? 'غير معروف';
+  String? get imageUrl => _authController.currentUser.value?.profilePic;
 
-  // Update user profile function
-  void updateUserProfile({String? name, String? email, String? imageUrl}) {
-    _userProfile.update((profile) {
-      profile = profile!.copyWith(
-        name: name,
-        email: email,
-        imageUrl: imageUrl,
-      );
-    });
+  @override
+  void onInit() {
+    super.onInit();
+    _authController = Get.find<AuthController>();
   }
 
-  // Method to pick image from gallery
+  void updateUserProfile({String? name, String? email, String? imageUrl}) {
+    // سيتم لاحقًا ربط هذا بالباك اند إذا لزم الأمر
+  }
+
   Future<void> pickImageFromGallery() async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
@@ -65,7 +32,6 @@ class ProfileController extends GetxController {
         imageQuality: 80,
         maxWidth: 800,
       );
-
       if (pickedFile != null) {
         selectedImage.value = File(pickedFile.path);
         await updateProfileImage(pickedFile.path);
@@ -75,7 +41,6 @@ class ProfileController extends GetxController {
     }
   }
 
-  // Method to pick image from camera
   Future<void> pickImageFromCamera() async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
@@ -83,7 +48,6 @@ class ProfileController extends GetxController {
         imageQuality: 80,
         maxWidth: 800,
       );
-
       if (pickedFile != null) {
         selectedImage.value = File(pickedFile.path);
         await updateProfileImage(pickedFile.path);
@@ -93,18 +57,13 @@ class ProfileController extends GetxController {
     }
   }
 
-  // Show image selection dialog
   void showImageSourceDialog() {
     Get.dialog(
       AlertDialog(
-        title: const Text(
-          'اختر مصدر الصورة',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Almarai',
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: const Text('اختر مصدر الصورة',
+            textAlign: TextAlign.center,
+            style:
+                TextStyle(fontFamily: 'Almarai', fontWeight: FontWeight.bold)),
         content: Directionality(
           textDirection: TextDirection.rtl,
           child: Column(
@@ -133,17 +92,10 @@ class ProfileController extends GetxController {
     );
   }
 
-  // This method would typically handle uploading the image to a server
-  // and updating the user profile with the new image URL
   Future<void> updateProfileImage(String imagePath) async {
     isLoading.value = true;
-
     try {
-      // Simulate a network request
       await Future.delayed(const Duration(seconds: 1));
-
-      // Update the profile with the new image
-      updateUserProfile(imageUrl: imagePath);
       showMessage('تم تحديث صورة الملف الشخصي بنجاح');
     } catch (e) {
       showMessage('فشل في تحديث صورة الملف الشخصي', isError: true);
@@ -152,15 +104,10 @@ class ProfileController extends GetxController {
     }
   }
 
-  // This method would typically make an API call to update the user's profile
-  // on the server
   Future<bool> saveUserProfile() async {
     isLoading.value = true;
-
     try {
-      // Simulate a network request
       await Future.delayed(const Duration(seconds: 1));
-
       showMessage('تم تحديث الملف الشخصي بنجاح');
       return true;
     } catch (e) {
@@ -171,7 +118,6 @@ class ProfileController extends GetxController {
     }
   }
 
-  // Show message
   void showMessage(String message, {bool isError = false}) {
     Get.snackbar(
       isError ? 'خطأ' : 'تم',

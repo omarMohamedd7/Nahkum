@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../data/models/lawyer_model.dart';
@@ -5,23 +7,20 @@ import '../../../../../routes/app_routes.dart';
 import '../../../../../core/data/models/lawyer.dart';
 
 class ConsultationController extends GetxController {
-  // Form controllers
   final cardNameController = TextEditingController();
   final cardNumberController = TextEditingController();
   final expiryDateController = TextEditingController();
   final ccvController = TextEditingController();
 
-  // Reactive variables
   final RxBool isLoading = false.obs;
   final Rx<LawyerModel?> selectedLawyer = Rx<LawyerModel?>(null);
 
   @override
   void onInit() {
     super.onInit();
-    // If lawyer was passed through arguments
+
     if (Get.arguments != null) {
       if (Get.arguments is Lawyer) {
-        // Convert core Lawyer to LawyerModel
         final coreLawyer = Get.arguments as Lawyer;
         selectedLawyer.value = LawyerModel(
           id: coreLawyer.id,
@@ -35,12 +34,10 @@ class ConsultationController extends GetxController {
       } else if (Get.arguments is LawyerModel) {
         selectedLawyer.value = Get.arguments;
       } else if (Get.arguments is Map) {
-        // Handle case where lawyer is passed as a map (for backward compatibility)
         final map = Get.arguments as Map;
         if (map.containsKey('lawyer')) {
           final lawyer = map['lawyer'];
           if (lawyer is Lawyer) {
-            // Convert core Lawyer to LawyerModel
             selectedLawyer.value = LawyerModel(
               id: lawyer.id,
               name: lawyer.name,
@@ -55,14 +52,12 @@ class ConsultationController extends GetxController {
       }
     }
 
-    // If no lawyer was set, use a default
     if (selectedLawyer.value == null) {
       selectedLawyer.value = LawyerModel(
         id: '1',
         name: 'أسم المحامي',
         city: 'دمشق',
-        description:
-            'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد',
+        description: 'هذا النص هو مثال لنص يمكن أن يستبدل...',
         price: 20.5,
         imageUrl: 'assets/images/person.svg',
         specialization: 'قانون مدني',
@@ -79,12 +74,14 @@ class ConsultationController extends GetxController {
     super.onClose();
   }
 
-  void goBack() {
-    Get.back();
+  bool validateForm() {
+    return cardNameController.text.isNotEmpty &&
+        cardNumberController.text.isNotEmpty &&
+        expiryDateController.text.isNotEmpty &&
+        ccvController.text.isNotEmpty;
   }
 
-  void submitRequest() {
-    // Validate form fields
+  void submitRequest() async {
     if (!validateForm()) {
       Get.snackbar(
         'خطأ في البيانات',
@@ -96,31 +93,84 @@ class ConsultationController extends GetxController {
       return;
     }
 
-    // Show loading
     isLoading.value = true;
 
-    // Simulate API call
-    Future.delayed(const Duration(milliseconds: 1000), () {
+    try {
+      final dio = Dio();
+      const clientId = 'AUF2cMuydRvmCt5DX9T090H9rLTQLvJsC6nVt_Vrkl1n5O0q2maAcMuKPIpiR8935UB4bLQleIlkx_uK';
+      const secret = 'ECWSoG2zxoIoFqlIbSYp9pEhqqOLHUvwu1Nj4jXAPdlUjmS37VYibOhvyjJ0y8ddbneIZyDVgVRRd7oH';
+      final basicAuth = 'Basic ${base64Encode(utf8.encode('$clientId:$secret'))}';
+
+      final tokenRes = await dio.post(
+        'https://api-m.sandbox.paypal.com/v1/oauth2/token',
+        data: {'grant_type': 'client_credentials'},
+        options: Options(
+          headers: {
+            'Authorization': basicAuth,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        ),
+      );
+
+      final accessToken = tokenRes.data['access_token'];
+
+      final lawyer = selectedLawyer.value!;
+      final orderRes = await dio.post(
+        'https://api-m.sandbox.paypal.com/v2/checkout/orders',
+        data: {
+          "intent": "CAPTURE",
+          "purchase_units": [
+            {
+              "amount": {
+                "currency_code": "USD",
+                "value": lawyer.price.toString()
+              }
+            }
+          ]
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      final orderId = orderRes.data['id'];
+
+      final captureRes = await dio.post(
+        'https://api-m.sandbox.paypal.com/v2/checkout/orders/$orderId/capture',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
       isLoading.value = false;
 
-      // Navigate to home after successful payment
-      Get.offAllNamed(Routes.HOME);
-
-      // Show success message
+      if (captureRes.statusCode == 201 || captureRes.statusCode == 200) {
+        Get.offAllNamed(Routes.HOME);
+        Get.snackbar(
+          'تم الدفع',
+          'تم تنفيذ الدفع بنجاح عبر PayPal',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        throw Exception('فشل تنفيذ عملية الدفع');
+      }
+    } catch (e) {
+      print(e);
+      isLoading.value = false;
       Get.snackbar(
-        'تم الطلب بنجاح',
-        'تم إرسال طلب الاستشارة بنجاح',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
+        'فشل الدفع',
+        'حدث خطأ أثناء تنفيذ الدفع',
+        backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-    });
-  }
-
-  bool validateForm() {
-    return cardNameController.text.isNotEmpty &&
-        cardNumberController.text.isNotEmpty &&
-        expiryDateController.text.isNotEmpty &&
-        ccvController.text.isNotEmpty;
+      print('Capture Error: $e');
+    }
   }
 }

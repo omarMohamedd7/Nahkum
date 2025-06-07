@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:legal_app/app/core/utils/app_assets.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../controllers/onboarding_controller.dart';
 import '../../data/models/user_role.dart';
@@ -68,10 +67,8 @@ class OnboardingView extends GetView<OnboardingController> {
         width: width,
         height: height,
         child: SvgPicture.asset(
-          color: AppColors.goldLight,
-          AppAssets.mainLogo2,
-          height: 100,
-          width: 100,
+          'assets/images/Logo.svg',
+          fit: BoxFit.contain,
         ),
       ),
     );

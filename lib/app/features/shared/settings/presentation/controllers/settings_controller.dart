@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:legal_app/app/features/shared/onboarding/data/models/user_role.dart';
 import 'package:legal_app/app/routes/app_routes.dart';
 
 class SettingsController extends GetxController {
@@ -8,7 +7,6 @@ class SettingsController extends GetxController {
   final RxString userName = 'أسم المستخدم'.obs;
   final RxString userEmail = 'user@example.com'.obs;
   final RxBool notificationsEnabled = true.obs;
-  UserRole userRole = Get.arguments['userRole'];
 
   @override
   void onInit() {

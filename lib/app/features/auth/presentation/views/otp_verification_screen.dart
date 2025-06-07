@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:legal_app/app/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:legal_app/app/features/auth/presentation/widgets/build_otp.dart';
 import 'package:legal_app/app/routes/app_routes.dart';
@@ -9,7 +8,6 @@ import 'package:legal_app/app/core/theme/app_colors.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import 'dart:async';
 
-// Enum to identify the verification purpose
 enum OtpVerificationPurpose {
   login,
   resetPassword,
@@ -17,14 +15,12 @@ enum OtpVerificationPurpose {
 
 class OtpVerificationScreen extends StatefulWidget {
   final String email;
-  final String phoneNumber;
   final OtpVerificationPurpose purpose;
 
   const OtpVerificationScreen({
     super.key,
     required this.email,
-    required this.phoneNumber,
-    this.purpose = OtpVerificationPurpose.login, // Default to login
+    this.purpose = OtpVerificationPurpose.login,
   });
 
   @override
@@ -33,34 +29,31 @@ class OtpVerificationScreen extends StatefulWidget {
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final _formKey = GlobalKey<FormState>();
-  final List<TextEditingController> _otpControllers = List.generate(
-    6,
-    (_) => TextEditingController(),
-  );
-  final List<FocusNode> _focusNodes = List.generate(
-    6,
-    (_) => FocusNode(),
-  );
+  final List<TextEditingController> _otpControllers =
+  List.generate(6, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes =
+  List.generate(6, (_) => FocusNode());
 
   bool _isLoading = false;
   int _remainingSeconds = 60;
   Timer? _resendTimer;
-  final _authController = AuthController();
+  final AuthController _authController = Get.find<AuthController>();
 
   @override
   void initState() {
     super.initState();
+    _sendInitialOtp();
     _startResendTimer();
+  }
+
+  void _sendInitialOtp() async {
+    await _authController.sendOtpToEmail(widget.email);
   }
 
   @override
   void dispose() {
-    for (var controller in _otpControllers) {
-      controller.dispose();
-    }
-    for (var node in _focusNodes) {
-      node.dispose();
-    }
+    _otpControllers.forEach((c) => c.dispose());
+    _focusNodes.forEach((f) => f.dispose());
     _resendTimer?.cancel();
     super.dispose();
   }
@@ -70,7 +63,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     setState(() {
       _remainingSeconds = 60;
     });
-
     _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (_remainingSeconds > 0) {
@@ -88,9 +80,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
-  String get _getOtpString {
-    return _otpControllers.map((controller) => controller.text).join();
-  }
+  String get _getOtpString =>
+      _otpControllers.map((c) => c.text).join();
 
   void _handleResendOtp() async {
     if (_remainingSeconds > 0) return;
@@ -100,9 +91,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     });
 
     try {
-      // Here we would call the actual resend OTP service
-      await Future.delayed(const Duration(seconds: 1));
-      _showMessage('تم إعادة إرسال رمز التحقق بنجاح');
+      await _authController.sendOtpToEmail(widget.email);
+      _showMessage('تم إعادة إرسال رمز التحقق إلى بريدك');
       _startResendTimer();
     } catch (e) {
       _showMessage('فشل إعادة إرسال رمز التحقق', isError: true);
@@ -115,7 +105,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   void _handleVerifyOtp() async {
     final otp = _getOtpString;
-    if (otp.length != 5 || !RegExp(r'^\d{5}$').hasMatch(otp)) {
+    if (otp.length != 6 || !RegExp(r'^\d{6}$').hasMatch(otp)) {
       _showMessage('يرجى إدخال رمز التحقق كاملاً', isError: true);
       return;
     }
@@ -125,21 +115,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     });
 
     try {
-      // Simulate verification with server
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Here you would call your actual OTP verification service
       await _authController.verifyOtp(widget.email, otp);
 
       if (mounted) {
         _showMessage('تم التحقق بنجاح');
-
-        // Navigate based on the verification purpose
         if (widget.purpose == OtpVerificationPurpose.login) {
-          // For login flow, navigate to home page
           Get.offAllNamed(Routes.HOME);
         } else {
-          // For password reset flow, navigate to reset password screen
           Get.toNamed(Routes.RESET_PASSWORD);
         }
       }
@@ -167,7 +149,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen size for responsive layout
     final Size screenSize = MediaQuery.of(context).size;
     final bool isSmallScreen = screenSize.width < 600;
 
@@ -177,10 +158,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: SvgPicture.asset(
-              'assets/images/arrow-right.svg',
-              color: AppColors.primary,
-            ),
+            icon: SvgPicture.asset('assets/images/arrow-right.svg',
+                color: AppColors.primary),
             onPressed: () => Get.back(),
           ),
         ],
@@ -193,7 +172,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final horizontalPadding = isSmallScreen ? 24.0 : 80.0;
-
               return SingleChildScrollView(
                 padding: EdgeInsets.fromLTRB(
                   horizontalPadding,
@@ -206,7 +184,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Header section
                       Text(
                         'التحقق من الرمز',
                         style: TextStyle(
@@ -219,7 +196,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'أدخل رمز التفعيل المكوّن من 5 خانات المُرسل إلى بريدك الإلكتروني ${widget.email}',
+                        'أدخل رمز التفعيل المكوّن من 6 خانات المُرسل إلى بريدك ${widget.email}',
                         style: TextStyle(
                           fontFamily: 'Almarai',
                           fontSize: isSmallScreen ? 16 : 18,
@@ -228,43 +205,34 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 48),
-
-                      // OTP input fields
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: List.generate(
-                          5,
-                          (index) => OtpTextField(
+                          6,
+                              (index) => OtpTextField(
                             controller: _otpControllers[index],
                             focusNode: _focusNodes[index],
                             nextFocusNode:
-                                index < 4 ? _focusNodes[index + 1] : null,
+                            index < 5 ? _focusNodes[index + 1] : null,
                             previousFocusNode:
-                                index > 0 ? _focusNodes[index - 1] : null,
+                            index > 0 ? _focusNodes[index - 1] : null,
                             index: index,
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 32),
-
-                      // Resend section
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            'لم تتلق الرمز؟',
-                            style: TextStyle(
-                              fontFamily: 'Almarai',
-                              fontSize: 16,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
+                          Text('لم تتلق الرمز؟',
+                              style: TextStyle(
+                                  fontFamily: 'Almarai',
+                                  fontSize: 16,
+                                  color: AppColors.textSecondary)),
                           const SizedBox(width: 8),
                           TextButton(
-                            onPressed: _remainingSeconds == 0
-                                ? _handleResendOtp
-                                : null,
+                            onPressed:
+                            _remainingSeconds == 0 ? _handleResendOtp : null,
                             child: Text(
                               _remainingSeconds > 0
                                   ? 'إعادة الإرسال خلال $_formattedTime'
@@ -281,10 +249,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 32),
-
-                      // Verify button
                       SizedBox(
                         width: isSmallScreen
                             ? double.infinity

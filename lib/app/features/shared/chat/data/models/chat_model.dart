@@ -18,7 +18,9 @@ class ChatModel {
     required this.isUnread,
     required this.caseTitle,
   });
-  copyWith({
+
+  // ✅ تم التعديل هنا: أضفنا copyWith كـ method صحيحة تُعيد نسخة جديدة
+  ChatModel copyWith({
     String? id,
     String? lawyerId,
     String? lawyerName,

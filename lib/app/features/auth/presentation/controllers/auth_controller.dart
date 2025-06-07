@@ -1,378 +1,272 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:async';
 import 'package:image_picker/image_picker.dart';
-import 'package:legal_app/app/features/shared/onboarding/data/models/user_role.dart';
-import '../../../../errors/failure.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import '../../../../core/data/services/dio_client.dart';
+import '../../../../core/data/services/shared_preferences.dart';
 import '../../../../routes/app_routes.dart';
+import '../../../shared/onboarding/data/models/user_role.dart';
+import '../../data/models/user/user_model.dart';
 
 class AuthController extends GetxController {
-  // Form keys
   final loginFormKey = GlobalKey<FormState>();
   final registerFormKey = GlobalKey<FormState>();
   final forgotPasswordFormKey = GlobalKey<FormState>();
-
-  // Login form controllers
-  late TextEditingController emailLoginController;
-  late TextEditingController passwordLoginController;
-
-  // Register form controllers - Common fields
-  late TextEditingController usernameController;
-  late TextEditingController emailRegisterController;
-  late TextEditingController passwordRegisterController;
-  late TextEditingController confirmPasswordController;
-
-  // Client & Lawyer specific controllers
-  late TextEditingController phoneController;
-  late TextEditingController cityController;
-
-  // Lawyer specific controllers
-  late TextEditingController specializationController;
-  late TextEditingController consultationFeeController;
-
-  // Judge specific controllers
-  late TextEditingController courtNameController;
-  late TextEditingController judgeSpecializationController;
-
-  // Forgot password controller
-  late TextEditingController emailForgotController;
-
-  // OTP Verification Form
   final otpFormKey = GlobalKey<FormState>();
+  final resetPasswordFormKey = GlobalKey<FormState>();
+
+  late TextEditingController emailLoginController, passwordLoginController;
+  late TextEditingController usernameController, emailRegisterController, passwordRegisterController, confirmPasswordController;
+  late TextEditingController phoneController, cityController, specializationController;
+  late TextEditingController emailForgotController;
+  late TextEditingController newPasswordController, confirmNewPasswordController;
+
+  late TextEditingController consultationFeeController;
+  late TextEditingController judgeSpecializationController;
+  late TextEditingController courtNameController;
+
   late List<TextEditingController> otpControllers;
   late List<FocusNode> otpFocusNodes;
   final remainingSeconds = 60.obs;
   Timer? _resendTimer;
 
-  // Reset Password Form
-  final resetPasswordFormKey = GlobalKey<FormState>();
-  late TextEditingController newPasswordController;
-  late TextEditingController confirmNewPasswordController;
-
-  // Observable variables
-  final email = ''.obs;
-  final password = ''.obs;
-  final phoneNumber = ''.obs;
   final isLoading = false.obs;
   final isLoggedIn = false.obs;
   final acceptTerms = false.obs;
-  final Rx<File?> selectedImage = Rx<File?>(null);
-  final Rx<UserRole?> userRole = Rx<UserRole?>(null);
+  final selectedImage = Rx<File?>(null);
+  final userRole = Rxn<UserRole>();
+  String? email;
 
-  // Image picker instance
+  final currentUser = Rxn<UserModel>();
   final ImagePicker _picker = ImagePicker();
-
-  // Computed getters
-  bool get canResendOtp => remainingSeconds.value == 0;
-
-  String get formattedTime {
-    int minutes = remainingSeconds.value ~/ 60;
-    int seconds = remainingSeconds.value % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-  }
-
-  String get getOtpString =>
-      otpControllers.map((controller) => controller.text).join();
 
   @override
   void onInit() {
     super.onInit();
     _initControllers();
-
-    // Check if role was passed in arguments
-    if (Get.arguments != null && Get.arguments is Map) {
-      final args = Get.arguments as Map;
-      if (args.containsKey('role')) {
-        userRole.value = args['role'] as UserRole?;
-      }
-    }
+    _loadUserFromStorage();
   }
 
   void _initControllers() {
-    // Initialize all controllers
     emailLoginController = TextEditingController();
     passwordLoginController = TextEditingController();
 
-    // Common register controllers
     usernameController = TextEditingController();
     emailRegisterController = TextEditingController();
     passwordRegisterController = TextEditingController();
     confirmPasswordController = TextEditingController();
 
-    // Client & Lawyer specific controllers
     phoneController = TextEditingController();
     cityController = TextEditingController();
-
-    // Lawyer specific controllers
     specializationController = TextEditingController();
-    consultationFeeController = TextEditingController();
 
-    // Judge specific controllers
-    courtNameController = TextEditingController();
-    judgeSpecializationController = TextEditingController();
-
-    // Other controllers
     emailForgotController = TextEditingController();
-    otpControllers = List.generate(5, (_) => TextEditingController());
-    otpFocusNodes = List.generate(5, (_) => FocusNode());
     newPasswordController = TextEditingController();
     confirmNewPasswordController = TextEditingController();
 
-    // Setup controller listeners to update observable values
-    emailLoginController
-        .addListener(() => email.value = emailLoginController.text);
-    passwordLoginController
-        .addListener(() => password.value = passwordLoginController.text);
-    phoneController.addListener(() => phoneNumber.value = phoneController.text);
+    consultationFeeController = TextEditingController();
+    judgeSpecializationController = TextEditingController();
+    courtNameController = TextEditingController();
+
+    otpControllers = List.generate(6, (_) => TextEditingController());
+    otpFocusNodes = List.generate(6, (_) => FocusNode());
+  }
+
+  void _loadUserFromStorage() async {
+    final user = await SharedPrefHelper.getUser();
+    final token = await SharedPrefHelper.getToken();
+    if (user != null && token != null) {
+      DioClient().updateToken(token);
+      currentUser.value = user;
+      isLoggedIn.value = true;
+    }
   }
 
   @override
   void onClose() {
-    // Dispose all controllers
+    super.onClose();
     _disposeControllers();
     _resendTimer?.cancel();
-    super.onClose();
   }
 
   void _disposeControllers() {
-    // Common controllers
     emailLoginController.dispose();
     passwordLoginController.dispose();
     usernameController.dispose();
     emailRegisterController.dispose();
     passwordRegisterController.dispose();
     confirmPasswordController.dispose();
-
-    // Client & Lawyer specific controllers
     phoneController.dispose();
     cityController.dispose();
-
-    // Lawyer specific controllers
     specializationController.dispose();
-    consultationFeeController.dispose();
-
-    // Judge specific controllers
-    courtNameController.dispose();
-    judgeSpecializationController.dispose();
-
-    // Other controllers
     emailForgotController.dispose();
-    for (var controller in otpControllers) {
-      controller.dispose();
-    }
-    for (var node in otpFocusNodes) {
-      node.dispose();
-    }
     newPasswordController.dispose();
     confirmNewPasswordController.dispose();
+    consultationFeeController.dispose();
+    judgeSpecializationController.dispose();
+    courtNameController.dispose();
+    otpControllers.forEach((c) => c.dispose());
+    otpFocusNodes.forEach((f) => f.dispose());
   }
 
-  // Reset controllers for reuse
-  void reset() {
-    acceptTerms.value = false;
-    _disposeControllers();
-    _initControllers();
+  void setTermsAcceptance(bool value) {
+    acceptTerms.value = value;
   }
 
-  // Called when switching between login and register screens
-  void resetLoginForm() {
-    emailLoginController.clear();
-    passwordLoginController.clear();
-    acceptTerms.value = false;
-  }
-
-  // Login function
   Future<void> login() async {
-    if (loginFormKey.currentState?.validate() != true) {
-      print("Login validation failed");
-      return;
-    }
-
-    if (!acceptTerms.value) {
-      print("Terms not accepted");
-      return;
-    }
-
+    if (!loginFormKey.currentState!.validate() || !acceptTerms.value) return;
     isLoading.value = true;
-    print(
-        "Login process starting with role: ${userRole.value?.toString() ?? 'null'}");
-
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
-      print("API call completed");
+      final token = await DioClient().loginUser(emailLoginController.text, passwordLoginController.text);
+      DioClient().updateToken(token);
+      await SharedPrefHelper.saveToken(token);
 
-      // Set logged in status
+      // TODO: Fetch user model from API
+      // UserModel user = ...;
+      // currentUser.value = user;
+      // await SharedPrefHelper.saveUser(user);
+
       isLoggedIn.value = true;
-      print("User logged in successfully");
-
-      // In a real app, you would navigate to OTP verification here
-      // For debugging purposes, we'll navigate directly to the home screen
-
-      // Navigate to the appropriate home screen based on user role
-      if (userRole.value == UserRole.client) {
-        print("Navigating to client home");
-        Get.offAllNamed(Routes.HOME);
-      } else if (userRole.value == UserRole.lawyer) {
-        print("Navigating to lawyer home: ${Routes.LAWYER_HOME}");
-        // Print the actual route value
-        print("Lawyer home route value: ${Routes.LAWYER_HOME}");
-        Get.offAllNamed(Routes.LAWYER_HOME);
-      } else if (userRole.value == UserRole.judge) {
-        print("Navigating to judge home");
-        Get.offAllNamed(Routes.Judge_HOME);
-      } else {
-        // Default to client home if role is not set
-        print("Role not set, defaulting to client home");
-        Get.offAllNamed(Routes.HOME);
-      }
+      Get.offAllNamed(Routes.HOME);
     } catch (e) {
-      print("Login error: $e");
-      if (e is AuthFailure || e is NetworkFailure || e is ServerFailure) {
-        rethrow;
-      }
-      throw AuthFailure(message: 'فشل تسجيل الدخول');
+      Get.snackbar('خطأ', e.toString(), backgroundColor: Colors.red);
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Google sign in
   Future<void> signInWithGoogle() async {
     if (!acceptTerms.value) {
-      showMessage('يرجى الموافقة على الشروط والأحكام', isError: true);
+      Get.snackbar('تنبيه', 'يرجى الموافقة على الشروط والأحكام', backgroundColor: Colors.red, colorText: Colors.white);
       return;
     }
 
     isLoading.value = true;
-
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
+      final GoogleSignIn _googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        isLoading.value = false;
+        return;
+      }
 
-      // Set logged in status
+      final email = googleUser.email;
+      final name = googleUser.displayName ?? 'مستخدم Google';
+
+      final token = await DioClient().loginWithGoogle(email: email, name: name);
+      DioClient().updateToken(token);
+      await SharedPrefHelper.saveToken(token);
+
+      // TODO: Fetch user model from API
+      // UserModel user = ...;
+      // currentUser.value = user;
+      // await SharedPrefHelper.saveUser(user);
+
       isLoggedIn.value = true;
-      showMessage('تم تسجيل الدخول بنجاح عبر حساب جوجل');
-
-      print(
-          "Google sign in successful with role: ${userRole.value?.toString() ?? 'null'}");
-
-      // Navigate to the appropriate home screen based on user role
-      if (userRole.value == UserRole.client) {
-        print("Navigating to client home");
-        Get.offAllNamed(Routes.HOME);
-      } else if (userRole.value == UserRole.lawyer) {
-        print("Navigating to lawyer home from Google sign-in");
-        Get.offAllNamed(Routes.LAWYER_HOME);
-      } else if (userRole.value == UserRole.judge) {
-        print("Navigating to judge home");
-        Get.offAllNamed(Routes.Judge_HOME);
-      } else {
-        // Default to client home if role is not set
-        print("Role not set, defaulting to client home");
-        Get.offAllNamed(Routes.HOME);
-      }
+      Get.offAllNamed(Routes.HOME);
     } catch (e) {
-      if (e is AuthFailure) {
-        showMessage(e.message, isError: true);
-      } else if (e is NetworkFailure) {
-        showMessage(e.message, isError: true);
-      } else {
-        showMessage('فشل تسجيل الدخول عبر حساب جوجل', isError: true);
-      }
-      rethrow;
+      Get.snackbar('خطأ', 'فشل تسجيل الدخول عبر Google: $e', backgroundColor: Colors.red);
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Register function
   Future<void> register() async {
-    if (registerFormKey.currentState?.validate() != true) {
-      return;
-    }
-
-    if (!acceptTerms.value) {
-      Get.snackbar(
-        'تنبيه',
-        'يرجى الموافقة على الشروط والاحكام',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+    if (!registerFormKey.currentState!.validate() || !acceptTerms.value) return;
+    isLoading.value = true;
+    try {
+      await DioClient().registerUser(
+        name: usernameController.text,
+        email: emailRegisterController.text,
+        password: passwordRegisterController.text,
+        phone: phoneController.text,
+        city: cityController.text,
+        specialization: specializationController.text,
+        role: userRole.value?.name ?? 'client',
+        profileImagePath: selectedImage.value?.path ?? '',
       );
-      return;
-    }
-
-    isLoading.value = true;
-
-    try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
-
-      showMessage('تم إنشاء الحساب بنجاح');
-
-      // Save email for registration success screen
-      final email = emailRegisterController.text.trim();
-
-      // Reset controllers before navigation
-      reset();
-
-      // Navigate to registration success screen
-      Get.offAllNamed(Routes.REGISTER_SUCCESS, arguments: {
-        'email': email,
-      });
+      Get.offAllNamed(Routes.REGISTER_SUCCESS, arguments: {'email': emailRegisterController.text});
     } catch (e) {
-      if (e is AuthFailure) {
-        showMessage(e.message, isError: true);
-      } else if (e is NetworkFailure) {
-        showMessage(e.message, isError: true);
-      } else {
-        showMessage('فشل إنشاء الحساب', isError: true);
-      }
-      rethrow;
+      Get.snackbar('خطأ', e.toString(), backgroundColor: Colors.red);
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Forgot password
   Future<void> forgotPassword() async {
-    if (forgotPasswordFormKey.currentState?.validate() != true) {
-      return;
-    }
-
+    if (!forgotPasswordFormKey.currentState!.validate()) return;
     isLoading.value = true;
-
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
-
-      showMessage('تم إرسال رابط إعادة تعيين كلمة المرور');
-
-      // Navigate back
-      Get.back();
+      await DioClient().requestPasswordReset(emailForgotController.text);
+      Get.snackbar('تم', 'تم إرسال رابط إعادة التعيين', backgroundColor: Colors.green);
     } catch (e) {
-      if (e is AuthFailure) {
-        showMessage(e.message, isError: true);
-      } else if (e is NetworkFailure) {
-        showMessage(e.message, isError: true);
-      } else {
-        showMessage('فشل إرسال رابط إعادة التعيين', isError: true);
-      }
-      rethrow;
+      Get.snackbar('خطأ', e.toString(), backgroundColor: Colors.red);
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Logout function
-  void logout() {
-    isLoggedIn.value = false;
-    reset();
-    Get.offAllNamed(Routes.LOGIN);
+  Future<void> verifyOtp(String email, String otp) async {
+    isLoading.value = true;
+    try {
+      await DioClient().verifyOtp(email, otp);
+      Get.offAllNamed(Routes.LOGIN);
+    } catch (e) {
+      Get.snackbar('خطأ', e.toString(), backgroundColor: Colors.red);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  // Method to pick image from gallery
+  Future<void> resetPassword(String email, String newPassword) async {
+    if (!resetPasswordFormKey.currentState!.validate()) return;
+    isLoading.value = true;
+    try {
+      await DioClient().resetPassword(email, newPassword);
+      Get.offAllNamed(Routes.LOGIN);
+    } catch (e) {
+      Get.snackbar('خطأ', e.toString(), backgroundColor: Colors.red);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> sendOtpToEmail(String email) async {
+    isLoading.value = true;
+    try {
+      await DioClient().sendOtpToEmail(email);
+      startOtpTimer();
+      Get.snackbar('تم', 'تم إرسال رمز التحقق إلى بريدك الإلكتروني', backgroundColor: Colors.green);
+    } catch (e) {
+      Get.snackbar('خطأ', e.toString(), backgroundColor: Colors.red);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void startOtpTimer() {
+    remainingSeconds.value = 60;
+    _resendTimer?.cancel();
+    _resendTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (remainingSeconds.value > 0) {
+        remainingSeconds.value--;
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  void showMessage(String message, {bool isError = false}) {
+    Get.snackbar(
+      isError ? 'خطأ' : 'نجاح',
+      message,
+      backgroundColor: isError ? Colors.red : Colors.green,
+      colorText: Colors.white,
+    );
+  }
+
   Future<void> pickImageFromGallery() async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
@@ -389,7 +283,6 @@ class AuthController extends GetxController {
     }
   }
 
-  // Method to pick image from camera
   Future<void> pickImageFromCamera() async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
@@ -406,17 +299,13 @@ class AuthController extends GetxController {
     }
   }
 
-  // Show image selection dialog
   void showImageSourceDialog() {
     Get.dialog(
       AlertDialog(
         title: const Text(
           'اختر مصدر الصورة',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Almarai',
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontFamily: 'Almarai', fontWeight: FontWeight.bold),
         ),
         content: Directionality(
           textDirection: TextDirection.rtl,
@@ -444,77 +333,5 @@ class AuthController extends GetxController {
         ),
       ),
     );
-  }
-
-  // Update terms acceptance
-  void setTermsAcceptance(bool value) {
-    acceptTerms.value = value;
-  }
-
-  // Show message
-  void showMessage(String message, {bool isError = false}) {
-    Get.snackbar(
-      isError ? 'خطأ' : 'تم',
-      message,
-      backgroundColor: isError ? Colors.red : Colors.green,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.BOTTOM,
-    );
-  }
-
-  Future<void> verifyOtp(String email, String otp) async {
-    isLoading.value = true;
-
-    try {
-      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
-      // Implement actual OTP verification logic here
-      isLoading.value = false;
-    } catch (e) {
-      isLoading.value = false;
-      rethrow;
-    }
-  }
-
-  Future<void> resendOtp(String email) async {
-    isLoading.value = true;
-
-    try {
-      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
-      // Implement actual resend OTP logic here
-      isLoading.value = false;
-    } catch (e) {
-      isLoading.value = false;
-      rethrow;
-    }
-  }
-
-  Future<void> resetPassword(String email, String newPassword) async {
-    isLoading.value = true;
-
-    try {
-      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
-      // Implement actual reset password logic here
-
-      // Reset controller state
-      reset();
-
-      isLoading.value = false;
-    } catch (e) {
-      isLoading.value = false;
-      rethrow;
-    }
-  }
-
-  void startResendTimer() {
-    _resendTimer?.cancel();
-    remainingSeconds.value = 60;
-
-    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (remainingSeconds.value > 0) {
-        remainingSeconds.value--;
-      } else {
-        _resendTimer?.cancel();
-      }
-    });
   }
 }

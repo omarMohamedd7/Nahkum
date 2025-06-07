@@ -48,7 +48,6 @@ class PublishCaseView extends GetView<PublishCaseController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Document upload section at the top
                       const SizedBox(height: 8),
                       FileUploadSection(
                         selectedFiles: controller.selectedFiles,
@@ -58,20 +57,11 @@ class PublishCaseView extends GetView<PublishCaseController> {
                         ),
                         onRemoveFile: controller.removeFile,
                       ),
-
                       const SizedBox(height: 24),
-
-                      // Case Type Dropdown
                       const CaseTypeDropdown(),
-
                       const SizedBox(height: 16),
-
-                      // City Dropdown
                       const CityDropdown(),
-
                       const SizedBox(height: 16),
-
-                      // Case Description
                       CustomTextField(
                         labelText: 'وصف القضية',
                         hintText: 'أكتب وصف القضية',
@@ -79,17 +69,13 @@ class PublishCaseView extends GetView<PublishCaseController> {
                         validator: FormValidators.validateCaseDescription,
                         isMultiline: true,
                       ),
-
                       const SizedBox(height: 32),
-
-                      // Submit Button
                       CustomButton(
                         text: 'نشر القضية',
                         onTap: controller.submitForm,
                         backgroundColor: AppColors.primary,
                         textColor: Colors.white,
                       ),
-
                       const SizedBox(height: 24),
                     ],
                   ),
@@ -97,11 +83,12 @@ class PublishCaseView extends GetView<PublishCaseController> {
               ),
             ),
             Obx(() {
-              if (controller.isSubmitting.value) {
-                return const LoginScreen();
-              } else {
-                return const SizedBox.shrink();
-              }
+              return controller.isSubmitting.value
+                  ? Container(
+                      color: Colors.black.withOpacity(0.4),
+                      child: const Center(child: CircularProgressIndicator()),
+                    )
+                  : const SizedBox.shrink();
             }),
           ],
         ),

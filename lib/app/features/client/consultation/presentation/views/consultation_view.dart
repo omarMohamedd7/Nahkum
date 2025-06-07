@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:legal_app/app/core/theme/app_styles.dart';
 import '../../../../../core/theme/app_colors.dart';
@@ -97,36 +97,36 @@ class ConsultationView extends GetView<ConsultationController> {
             // Row for picture and location
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Lawyer picture on the left
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.grey[200],
-                  child: SvgPicture.asset(AppAssets.edit),
-                ),
-                const SizedBox(width: 12),
-
-                // Location on the right
-                Row(
-                  children: [
-                    Text(
-                      lawyer.city,
-                      style: const TextStyle(
-                        fontFamily: 'Almarai',
-                        fontSize: 11,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    SvgPicture.asset(
-                      'assets/images/location.svg',
-                      width: 14,
-                      height: 14,
-                      color: const Color(0xFF737373),
-                    ),
-                  ],
-                ),
-              ],
+              // children: [
+              //   // Lawyer picture on the left
+              //   CircleAvatar(
+              //     radius: 30,
+              //     backgroundColor: Colors.grey[200],
+              //     child: SvgPicture.asset(AppAssets.edit),
+              //   ),
+              //   const SizedBox(width: 12),
+              //
+              //   // Location on the right
+              //   Row(
+              //     children: [
+              //       Text(
+              //         lawyer.city,
+              //         style: const TextStyle(
+              //           fontFamily: 'Almarai',
+              //           fontSize: 11,
+              //           color: Colors.black,
+              //         ),
+              //       ),
+              //       const SizedBox(width: 6),
+              //       SvgPicture.asset(
+              //         'assets/images/location.svg',
+              //         width: 14,
+              //         height: 14,
+              //         color: const Color(0xFF737373),
+              //       ),
+              //     ],
+              //   ),
+              // ],
             ),
             const SizedBox(height: 10),
 

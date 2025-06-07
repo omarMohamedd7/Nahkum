@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:legal_app/app/core/theme/app_colors.dart';
 import 'package:legal_app/app/core/utils/app_assets.dart';
 import 'package:legal_app/app/core/utils/responsive_utils.dart';
-import 'package:legal_app/app/features/shared/chat/data/models/message.dart';
+
 import '../controllers/chat_detail_controller.dart';
 
 class ChatDetailView extends GetView<ChatDetailController> {

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:legal_app/app/core/theme/app_colors.dart';
-import 'package:legal_app/app/routes/app_routes.dart';
+
 import 'package:legal_app/app/features/client/home/presentation/widgets/bottom_navigation_bar.dart';
 import 'package:legal_app/app/features/shared/chat/presentation/controllers/chat_controller.dart';
 import 'package:legal_app/app/features/shared/chat/presentation/widgets/chat_card.dart';
+import 'package:legal_app/app/shared/widgets/custom_search_text_field.dart';
 
 class ChatsView extends GetView<ChatController> {
   const ChatsView({Key? key}) : super(key: key);
@@ -33,18 +34,64 @@ class ChatsView extends GetView<ChatController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Title
-              SizedBox(
-                height: 25,
+              const SizedBox(height: 25),
+              CustomSearchTextField(
+                controller: controller.searchController,
+                hintText: 'ابحث عن محامي أو عميل...',
+                onChanged: controller.filterChats,
+                showFilterButton: false,
               ),
-
-              // Chat list with Obx for reactivity
+              const SizedBox(height: 16),
               Expanded(
                 child: Obx(() {
                   if (controller.isLoading.value) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
+                  // ✅ عرض نتائج البحث إذا موجودة
+                  if (controller.searchResults.isNotEmpty) {
+                    return ListView.separated(
+                      itemCount: controller.searchResults.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 16),
+                      itemBuilder: (context, index) {
+                        final user = controller.searchResults[index];
+                        return ListTile(
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 8),
+                          leading: CircleAvatar(
+                            backgroundImage: user['profileImage'] != ''
+                                ? NetworkImage(user['profileImage'])
+                                : const AssetImage(
+                                        'assets/images/default_avatar.png')
+                                    as ImageProvider,
+                            radius: 24,
+                          ),
+                          title: Text(
+                            user['name'],
+                            style: const TextStyle(
+                              fontFamily: 'Almarai',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          subtitle: Text(
+                            user['role'] == 'lawyer' ? 'محامي' : 'عميل',
+                            style: const TextStyle(
+                              fontFamily: 'Almarai',
+                              fontSize: 13,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          trailing:
+                              const Icon(Icons.arrow_forward_ios, size: 18),
+                          onTap: () => controller.startChatWithUser(user),
+                        );
+                      },
+                    );
+                  }
+
+                  // ✅ عرض المحادثات القديمة
                   if (controller.chats.isEmpty) {
                     return _buildEmptyState();
                   }
@@ -95,7 +142,7 @@ class ChatsView extends GetView<ChatController> {
           ),
           const SizedBox(height: 8),
           const Text(
-            'عند بدء محادثة مع محامي، ستظهر هنا',
+            'عند بدء محادثة مع محامي أو عميل، ستظهر هنا',
             style: TextStyle(
               fontFamily: 'Almarai',
               fontSize: 14,

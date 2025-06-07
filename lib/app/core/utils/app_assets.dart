@@ -2,7 +2,7 @@ class AppAssets {
   // Root directory SVGs
   static const String group76 = 'assets/images/Group 76.svg';
   static const String mainLogo = 'assets/images/main_logo.svg';
-  static const String mainLogo2 = 'assets/images/nahkom_logo.svg';
+  static const String mainLogo2 = 'assets/images/two.svg';
   static const String maximize4 = 'assets/images/maximize-4.svg';
   static const String edit = 'assets/images/edit.svg';
   static const String eyeSlash = 'assets/images/eye-slash.svg';

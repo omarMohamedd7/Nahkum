@@ -2,25 +2,21 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:dio/dio.dart' as dio;
 import '../../../../../errors/failure.dart';
 import '../../data/models/publish_case_model.dart';
 
 enum FileType { image, document, audio }
 
 class PublishCaseController extends GetxController {
-  // Form key
   final formKey = GlobalKey<FormState>();
-
-  // Text controllers
   final caseDescriptionController = TextEditingController();
 
-  // Reactive variables
   final RxString caseType = ''.obs;
   final RxString targetCity = ''.obs;
   final RxList<File> selectedFiles = <File>[].obs;
   final RxBool isSubmitting = false.obs;
 
-  // Case types dropdown options
   final List<String> caseTypes = [
     'جنائي',
     'مدني',
@@ -30,7 +26,6 @@ class PublishCaseController extends GetxController {
     'عمالي',
   ];
 
-  // City dropdown options
   final List<String> cities = [
     'دمشق',
     'حلب',
@@ -85,8 +80,6 @@ class PublishCaseController extends GetxController {
   }
 
   Future<void> pickDocuments() async {
-    // In a real app, you would implement document picking functionality
-    // This is a placeholder to demonstrate the UI
     selectedFiles.add(File('document.pdf'));
   }
 
@@ -112,34 +105,51 @@ class PublishCaseController extends GetxController {
     selectedFiles.removeAt(index);
   }
 
-  void submitForm() {
+  Future<void> submitForm() async {
     if (formKey.currentState?.validate() == true) {
       isSubmitting.value = true;
 
-      // Create the publish case model
-      final publishCase = PublishCaseModel(
-        caseType: caseType.value,
-        description: caseDescriptionController.text,
-        attachments: selectedFiles,
-        targetCity: targetCity.value.isNotEmpty ? targetCity.value : null,
-      );
+      try {
+        final dioClient = dio.Dio();
+        final url = 'http://192.168.1.108:8000/api/published-cases';
 
-      // Simulate API call
-      Future.delayed(const Duration(seconds: 1), () {
+        final formData = dio.FormData.fromMap({
+          "case_number": "PC-2024-001",
+          "plaintiff_name": "أحمد محمد",
+          "defendant_name": "شركة الإعمار",
+          "case_type": caseType.value,
+          "description": caseDescriptionController.text,
+          "target_city": targetCity.value,
+          "target_specialization": caseType.value,
+          "attachments": [
+            for (var file in selectedFiles)
+              await dio.MultipartFile.fromFile(
+                file.path,
+                filename: file.path.split('/').last,
+              ),
+          ],
+        });
+
+        final response = await dioClient.post(url, data: formData);
+
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          Get.snackbar(
+            'تم',
+            'تم نشر القضية بنجاح',
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          Get.back();
+        } else {
+          showErrorMessage(
+              'فشل في إرسال البيانات. رمز الحالة: ${response.statusCode}');
+        }
+      } catch (e) {
+        showErrorMessage('حدث خطأ أثناء الإرسال: $e');
+      } finally {
         isSubmitting.value = false;
-
-        // Here you would send the publishCase to your API
-
-        Get.snackbar(
-          'تم',
-          'تم نشر القضية بنجاح',
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-        );
-
-        Get.back();
-      });
+      }
     }
   }
 
